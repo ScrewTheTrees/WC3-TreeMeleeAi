@@ -12,6 +12,11 @@ export class AITownBuildingLocation {
         return this.isPointUnoccupied(new Point(x, y), sizes, unitType, builderType);
     }
 
+
+    public static getTownBuildingLocationByPoint(point: Point, unitType: number, builderType: number, size: TownBuildingSizes) {
+        return this.getTownBuildingLocation(point.x, point.y, unitType, builderType, size);
+    }
+
     public static getTownBuildingLocation(startX: number, startY: number, unitType: number, builderType: number, size: TownBuildingSizes) {
         let stepSize: number = size;
         let range: number = stepSize;
@@ -20,7 +25,7 @@ export class AITownBuildingLocation {
         startX = math.floor(startX / stepSize) * stepSize;
         startY = math.floor(startY / stepSize) * stepSize;
 
-        for (let i = 0; i < 1000; i++) {
+        for (let i = 0; i < 10000; i++) {
             if (this.isLocUnoccupied(startX + x, startY - range, size, unitType, builderType)) {
                 return new Point(startX + x, startY - range)
             }
@@ -40,6 +45,7 @@ export class AITownBuildingLocation {
                 x = -range;
             }
         }
+        return new Point(0, 0);
     }
 }
 

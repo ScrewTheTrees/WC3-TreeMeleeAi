@@ -69,7 +69,7 @@ export class AIWorkerGroups {
     }
 
     public getIdleConstructor() {
-        for (let i = 0; this.workerGroups.length; i++) {
+        for (let i = 0; i < this.workerGroups.length; i++) {
             let workerGroup = this.workerGroups[i];
             if (workerGroup.orderType == WorkerOrders.ORDER_BUILD) {
                 for (let j = 0; j < workerGroup.workers.length; j++) {

@@ -75,3 +75,21 @@ export function GetUnitsOfTypesAroundPointInRange(point: Point, range: number, .
 
     return units;
 }
+
+export function GetUnitsOfTypeByPlayer(unitType: number, player: player) {
+    let f = Filter(() => {
+        return (GetUnitTypeId(GetFilterUnit()) == unitType);
+    });
+    let g = CreateGroup();
+    GroupEnumUnitsOfPlayer(g, player, f);
+    let unit = FirstOfGroup(g);
+    let arr: unit[] = [];
+    while (unit != null) {
+        arr.push(unit);
+        GroupRemoveUnit(g, unit);
+        unit = FirstOfGroup(g)
+    }
+    DestroyFilter(f);
+    DestroyGroup(g);
+    return arr;
+}

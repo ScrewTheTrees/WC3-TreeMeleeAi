@@ -1,13 +1,4 @@
 export class AIPlayerStats {
-    private static ids: AIPlayerStats[] = [];
-
-    public static getInstance(aiPlayer: player) {
-        if (this.ids[GetPlayerId(aiPlayer)] == null) {
-            this.ids[GetPlayerId(aiPlayer)] = new AIPlayerStats(aiPlayer);
-        }
-        return this.ids[GetPlayerId(aiPlayer)];
-    }
-
     constructor(public aiPlayer: player) {
     }
 
@@ -27,7 +18,9 @@ export class AIPlayerStats {
     }
 
     public canAffordUnitVirtual(unitType: number) {
-        return (this.virtualGold >= GetUnitGoldCost(unitType) && this.virtualWood >= GetUnitWoodCost(unitType));
+        let newVar = this.virtualGold >= GetUnitGoldCost(unitType) && this.virtualWood >= GetUnitWoodCost(unitType);
+        this.reduceVirtualByUnit(unitType);
+        return newVar;
 
     }
 

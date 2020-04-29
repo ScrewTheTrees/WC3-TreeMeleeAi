@@ -40,11 +40,11 @@ export class AITownAllocator {
     }
 
     public getClosestTown(loc: Point): DistValue<Town> {
-        let closestTown: Town = this[0];
+        let closestTown: Town = this.towns[0];
         let distance = math.huge;
 
         for (let i = 0; i < this.towns.length; i++) {
-            let value = this[i];
+            let value = this.towns[i];
             let dist = loc.distanceTo(value.place);
             if (dist < distance) {
                 closestTown = value;
@@ -55,7 +55,7 @@ export class AITownAllocator {
     }
 
     public getRandomTown() {
-        return this[GetRandomInt(0, this.towns.length - 1)];
+        return this.towns[GetRandomInt(0, this.towns.length - 1)];
     }
 
     First() {
