@@ -1,24 +1,18 @@
-import {AITownBuildingLocationCache} from "./AITownBuildingLocationCache";
-import {Targeting} from "./Targeting";
-import {Point} from "../TreeLib/Utility/Point";
+import {Targeting} from "../Targeting";
+import {Point} from "../../TreeLib/Utility/Point";
+import {TownBuildingSizes} from "./TownBuildingSizes";
 
 export class AITownBuildingLocation {
-
-
-    public static isLocUnoccupied(x: number, y: number, sizes: AITownBuildingLocationSizes, unitType: number, builderType: number) {
-        if (AITownBuildingLocationCache.get(sizes, x, y)) {
-            return false;
-        }
-        if (!Targeting.CanBuildUnitAt(unitType, new Point(x, y), builderType)) {
-            AITownBuildingLocationCache.set(sizes, x, y);
-            return false;
-        } else {
-            return true;
-        }
-
+    public static isPointUnoccupied(point: Point | undefined, sizes: TownBuildingSizes, unitType: number, builderType: number) {
+        if (!point) point = new Point(0, 0);
+        return Targeting.CanBuildUnitAt(unitType, point, builderType);
     }
 
-    public static getTownBuildingLocation(startX: number, startY: number, unitType: number, builderType: number, size: AITownBuildingLocationSizes) {
+    public static isLocUnoccupied(x: number, y: number, sizes: TownBuildingSizes, unitType: number, builderType: number) {
+        return this.isPointUnoccupied(new Point(x, y), sizes, unitType, builderType);
+    }
+
+    public static getTownBuildingLocation(startX: number, startY: number, unitType: number, builderType: number, size: TownBuildingSizes) {
         let stepSize: number = size;
         let range: number = stepSize;
         let x = 0;
@@ -50,9 +44,3 @@ export class AITownBuildingLocation {
 }
 
 
-export enum AITownBuildingLocationSizes {
-    TINY = 64,
-    SMALL = 128,
-    MEDIUM = 192,
-    LARGE = 256,
-}

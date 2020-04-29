@@ -1,4 +1,4 @@
-import {Point} from "../TreeLib/Utility/Point";
+import {Point} from "../../TreeLib/Utility/Point";
 
 export class Town {
     constructor(public hallUnit: unit,

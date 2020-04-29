@@ -1,11 +1,12 @@
-import {AITownAllocator} from "./AITownAllocator";
-import {Point} from "../TreeLib/Utility/Point";
-import {Quick} from "../TreeLib/Quick";
-import {InverseFourCC} from "../TreeLib/Misc";
-import {Town} from "./Town";
+import {AITownAllocator} from "../Towns/AITownAllocator";
+import {Point} from "../../TreeLib/Utility/Point";
+import {Quick} from "../../TreeLib/Quick";
+import {InverseFourCC} from "../../TreeLib/Misc";
+import {Building} from "./Building";
+import {BuildingState} from "./BuildingState";
 
 export class AIBuildings {
-    private static ids: AIBuildings[];
+    private static ids: AIBuildings[] = [];
 
     public static getInstance(aiPlayer: player) {
         if (this.ids[GetPlayerId(aiPlayer)] == null) {
@@ -25,6 +26,9 @@ export class AIBuildings {
     private readonly onStartResearch: trigger;
 
     private readonly onFinish: trigger;
+
+    public onStartConstructCallbacks: {(building: Building): void}[] = [];
+    public onFinishConstructCallbacks: {(building: Building): void}[] = [];
 
     constructor(public aiPlayer: player) {
         this.onStartConstruct = CreateTrigger();
@@ -69,14 +73,24 @@ export class AIBuildings {
         const building = GetTriggerUnit();
         const aiTownAllocator = AITownAllocator.getInstance(this.aiPlayer);
         aiTownAllocator.makeTown(building);
-        this.buildings.push(new Building(building, BuildingState.CONSTRUCTING, aiTownAllocator.getClosestTown(Point.fromWidget(building)).value));//Make town
+        let building1 = new Building(building, BuildingState.CONSTRUCTING, aiTownAllocator.getClosestTown(Point.fromWidget(building)).value);
+        this.buildings.push(building1);//Make town
+        this.onStartConstructCallbacks.forEach((func) => {
+            func(building1);
+        })
+
     }
 
     private onFinishingConstructAction() {
         let byHall = this.getByHall(GetTriggerUnit());
         if (byHall != null) {
             byHall.status = BuildingState.IDLE;
+            let hall = byHall;
+            this.onFinishConstructCallbacks.forEach((func) => {
+                func(hall);
+            })
         }
+
     }
 
     private onStartTrainingAction() {
@@ -131,23 +145,4 @@ export class AIBuildings {
         return null;
     }
 
-
-}
-
-
-export class Building {
-    public targetType: string = "";
-
-    constructor(public building: unit,
-                public status: BuildingState,
-                public town: Town) {
-    }
-}
-
-export enum BuildingState {
-    IDLE = "IDLE",
-    CONSTRUCTING = "CONSTRUCTING",
-    UPGRADING = "UPGRADING",
-    TRAINING = "TRAINING",
-    RESEARCHING = "RESEARCHING",
 }

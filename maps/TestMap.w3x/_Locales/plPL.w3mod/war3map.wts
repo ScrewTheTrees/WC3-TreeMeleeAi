@@ -1,16 +1,16 @@
-﻿STRING 0
+ď»żSTRING 0
 {
-Divide and Conquer
+Dziel i rządź
 }
 
 STRING 1
 {
-3v3v3v3 or 6v6
+3na3na3na3 lub 6na6
 }
 
 STRING 2
 {
-Trolls and Golems control this beautiful forest. Expand quickly, and stain the river with the blood of your enemies.
+Ten piękny las jest opanowany przez trolle i golemy. Szybko rozbuduj swe wojska i wytocz ze swoich wrogów rzekę krwi.
 }
 
 STRING 3
@@ -35,66 +35,67 @@ STRING 9
 
 STRING 10
 {
-Player 1
+Gracz 1
 }
 
 STRING 11
 {
-Player 2
+Gracz 2
 }
 
 STRING 12
 {
-Player 3
+Gracz 3
 }
 
 STRING 13
 {
-Player 4
+Gracz 4
 }
 
 STRING 14
 {
-Player 5
+Gracz 5
 }
 
 STRING 15
 {
-Player 6
+Gracz 6
 }
 
 STRING 16
 {
-Player 7
+Gracz 7
 }
 
 STRING 17
 {
-Player 8
+Gracz 8
 }
 
 STRING 18
 {
-Player 9
+Gracz 9
 }
 
 STRING 19
 {
-Player 10
+Gracz 10
 }
 
 STRING 20
 {
-Player 11
+Gracz 11
 }
 
 STRING 21
 {
-Player 12
+Gracz 12
 }
 
 STRING 22
 {
-Force 1
+Armia 1
 }
+
 

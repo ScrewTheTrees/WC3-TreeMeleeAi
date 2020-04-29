@@ -1,0 +1,7 @@
+export enum BuildingState {
+    IDLE = "IDLE",
+    CONSTRUCTING = "CONSTRUCTING",
+    UPGRADING = "UPGRADING",
+    TRAINING = "TRAINING",
+    RESEARCHING = "RESEARCHING",
+}
