@@ -4,15 +4,17 @@ import {Quick} from "../../TreeLib/Quick";
 import {InverseFourCC} from "../../TreeLib/Misc";
 import {Building} from "./Building";
 import {BuildingState} from "./BuildingState";
+import {AIPlayerHolder} from "../Races/AIPlayerHolder";
 
 export class AIBuildings {
     private static ids: AIBuildings[] = [];
 
-    public static getInstance(aiPlayer: player) {
-        if (this.ids[GetPlayerId(aiPlayer)] == null) {
-            this.ids[GetPlayerId(aiPlayer)] = new AIBuildings(aiPlayer);
+
+    public static getInstance(aiPlayer: AIPlayerHolder) {
+        if (this.ids[GetPlayerId(aiPlayer.aiPlayer)] == null) {
+            this.ids[GetPlayerId(aiPlayer.aiPlayer)] = new AIBuildings(aiPlayer);
         }
-        return this.ids[GetPlayerId(aiPlayer)];
+        return this.ids[GetPlayerId(aiPlayer.aiPlayer)];
     }
 
     private buildings: Building[] = [];
@@ -30,50 +32,54 @@ export class AIBuildings {
     public onStartConstructCallbacks: {(building: Building): void}[] = [];
     public onFinishConstructCallbacks: {(building: Building): void}[] = [];
 
-    constructor(public aiPlayer: player) {
+    private townAllocator: AITownAllocator;
+
+    constructor(public aiPlayer: AIPlayerHolder) {
+        this.townAllocator = AITownAllocator.getInstance(aiPlayer);
+
         this.onStartConstruct = CreateTrigger();
-        TriggerRegisterPlayerUnitEvent(this.onStartConstruct, this.aiPlayer, EVENT_PLAYER_UNIT_CONSTRUCT_START, null);
+        TriggerRegisterPlayerUnitEvent(this.onStartConstruct, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_CONSTRUCT_START, null);
         TriggerAddAction(this.onStartConstruct, () => this.onStartConstructAction());
 
         this.onCancelConstruct = CreateTrigger();
-        TriggerRegisterPlayerUnitEvent(this.onCancelConstruct, this.aiPlayer, EVENT_PLAYER_UNIT_CONSTRUCT_CANCEL, null);
+        TriggerRegisterPlayerUnitEvent(this.onCancelConstruct, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_CONSTRUCT_CANCEL, null);
         TriggerAddAction(this.onCancelConstruct, () => this.popByHall(GetTriggerUnit()));
 
         this.onFinishConstruct = CreateTrigger();
-        TriggerRegisterPlayerUnitEvent(this.onFinishConstruct, this.aiPlayer, EVENT_PLAYER_UNIT_CONSTRUCT_FINISH, null);
+        TriggerRegisterPlayerUnitEvent(this.onFinishConstruct, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_CONSTRUCT_FINISH, null);
         TriggerAddAction(this.onFinishConstruct, () => this.onFinishingConstructAction());
 
         this.onBuildingDie = CreateTrigger();
-        TriggerRegisterPlayerUnitEvent(this.onBuildingDie, this.aiPlayer, EVENT_PLAYER_UNIT_DEATH, null);
+        TriggerRegisterPlayerUnitEvent(this.onBuildingDie, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_DEATH, null);
         TriggerAddAction(this.onBuildingDie, () => this.popByHall(GetDyingUnit()));
 
         this.onStartTraining = CreateTrigger();
-        TriggerRegisterPlayerUnitEvent(this.onStartTraining, this.aiPlayer, EVENT_PLAYER_UNIT_TRAIN_START, null);
+        TriggerRegisterPlayerUnitEvent(this.onStartTraining, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_TRAIN_START, null);
         TriggerAddAction(this.onStartTraining, () => this.onStartTrainingAction());
 
         this.onStartUpgrade = CreateTrigger();
-        TriggerRegisterPlayerUnitEvent(this.onStartUpgrade, this.aiPlayer, EVENT_PLAYER_UNIT_UPGRADE_START, null);
+        TriggerRegisterPlayerUnitEvent(this.onStartUpgrade, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_UPGRADE_START, null);
         TriggerAddAction(this.onStartUpgrade, () => this.onStartUpgradeAction());
 
         this.onStartResearch = CreateTrigger();
-        TriggerRegisterPlayerUnitEvent(this.onStartResearch, this.aiPlayer, EVENT_PLAYER_UNIT_RESEARCH_START, null);
+        TriggerRegisterPlayerUnitEvent(this.onStartResearch, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_RESEARCH_START, null);
         TriggerAddAction(this.onStartResearch, () => this.onStartResearchAction());
 
         this.onFinish = CreateTrigger();
-        TriggerRegisterPlayerUnitEvent(this.onFinish, this.aiPlayer, EVENT_PLAYER_UNIT_TRAIN_CANCEL, null);
-        TriggerRegisterPlayerUnitEvent(this.onFinish, this.aiPlayer, EVENT_PLAYER_UNIT_TRAIN_FINISH, null);
-        TriggerRegisterPlayerUnitEvent(this.onFinish, this.aiPlayer, EVENT_PLAYER_UNIT_UPGRADE_CANCEL, null);
-        TriggerRegisterPlayerUnitEvent(this.onFinish, this.aiPlayer, EVENT_PLAYER_UNIT_UPGRADE_FINISH, null);
-        TriggerRegisterPlayerUnitEvent(this.onFinish, this.aiPlayer, EVENT_PLAYER_UNIT_RESEARCH_FINISH, null);
-        TriggerRegisterPlayerUnitEvent(this.onFinish, this.aiPlayer, EVENT_PLAYER_UNIT_RESEARCH_CANCEL, null);
+        TriggerRegisterPlayerUnitEvent(this.onFinish, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_TRAIN_CANCEL, null);
+        TriggerRegisterPlayerUnitEvent(this.onFinish, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_TRAIN_FINISH, null);
+        TriggerRegisterPlayerUnitEvent(this.onFinish, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_UPGRADE_CANCEL, null);
+        TriggerRegisterPlayerUnitEvent(this.onFinish, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_UPGRADE_FINISH, null);
+        TriggerRegisterPlayerUnitEvent(this.onFinish, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_RESEARCH_FINISH, null);
+        TriggerRegisterPlayerUnitEvent(this.onFinish, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_RESEARCH_CANCEL, null);
         TriggerAddAction(this.onFinish, () => this.onFinishAction());
     }
 
     private onStartConstructAction() {
         const building = GetTriggerUnit();
-        const aiTownAllocator = AITownAllocator.getInstance(this.aiPlayer);
-        aiTownAllocator.makeTown(building);
-        let building1 = new Building(building, BuildingState.CONSTRUCTING, aiTownAllocator.getClosestTown(Point.fromWidget(building)).value);
+
+        this.townAllocator.makeTown(building);
+        let building1 = new Building(building, BuildingState.CONSTRUCTING, this.townAllocator.getClosestTown(Point.fromWidget(building)).value);
         this.buildings.push(building1);//Make town
         this.onStartConstructCallbacks.forEach((func) => {
             func(building1);

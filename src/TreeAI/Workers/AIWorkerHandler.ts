@@ -4,21 +4,21 @@ import {Targeting} from "../Targeting";
 import {Point} from "../../TreeLib/Utility/Point";
 import {InverseFourCC, IsValidUnit} from "../../TreeLib/Misc";
 import {Ids} from "../Ids";
-import {WorkerTypes} from "./WorkerTypes";
 import {WorkerGroup} from "./WorkerGroup";
 import {WorkerOrders} from "./WorkerOrders";
 import {AIWorkerAllocator} from "./AIWorkerAllocator";
 import {AIWorkerGroups} from "./AIWorkerGroups";
 import {AITownAllocator} from "../Towns/AITownAllocator";
+import {AIPlayerHolder} from "../Races/AIPlayerHolder";
 
 export class AIWorkerHandler {
     private static ids: AIWorkerHandler[] = [];
 
-    public static getInstance(aiPlayer: player, workerTypes: WorkerTypes): AIWorkerHandler {
-        if (this.ids[GetPlayerId(aiPlayer)] == null) {
-            this.ids[GetPlayerId(aiPlayer)] = new AIWorkerHandler(aiPlayer, workerTypes);
+    public static getInstance(aiPlayer: AIPlayerHolder): AIWorkerHandler {
+        if (this.ids[GetPlayerId(aiPlayer.aiPlayer)] == null) {
+            this.ids[GetPlayerId(aiPlayer.aiPlayer)] = new AIWorkerHandler(aiPlayer);
         }
-        return this.ids[GetPlayerId(aiPlayer)];
+        return this.ids[GetPlayerId(aiPlayer.aiPlayer)];
     }
 
     private workerAllocator: AIWorkerAllocator;
@@ -27,22 +27,22 @@ export class AIWorkerHandler {
     private workerAdder = CreateTrigger();
     private workerRemover = CreateTrigger();
 
-    constructor(public aiPlayer: player, public workerTypes: WorkerTypes) {
+    constructor(public aiPlayer: AIPlayerHolder) {
         this.workerAllocator = AIWorkerAllocator.getInstance(aiPlayer);
-        this.workerGroups = AIWorkerGroups.getInstance(aiPlayer, workerTypes);
+        this.workerGroups = AIWorkerGroups.getInstance(aiPlayer);
 
         for (let i = 0; i < this.workerAllocator.workers.length; i++) {
             let wg = this.workerAllocator.workers[i];
             this.workerGroups.idleIndexes.push(wg);
         }
 
-        TriggerRegisterPlayerUnitEvent(this.workerAdder, aiPlayer, EVENT_PLAYER_UNIT_TRAIN_FINISH, null);
+        TriggerRegisterPlayerUnitEvent(this.workerAdder, aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_TRAIN_FINISH, null);
         TriggerAddCondition(this.workerAdder, Condition(() => {
             return (Ids.IsPeonId(InverseFourCC(GetUnitTypeId(GetTrainedUnit()))))
         }));
         TriggerAddAction(this.workerAdder, () => this.workerAdderAction());
 
-        TriggerRegisterPlayerUnitEvent(this.workerRemover, aiPlayer, EVENT_PLAYER_UNIT_DEATH, null);
+        TriggerRegisterPlayerUnitEvent(this.workerRemover, aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_DEATH, null);
         TriggerAddCondition(this.workerRemover, Condition(() => {
             return (Ids.IsPeonId(InverseFourCC(GetUnitTypeId(GetDyingUnit()))))
         }));
@@ -51,7 +51,7 @@ export class AIWorkerHandler {
 
     private workerAdderAction() {
         let id = GetTrainedUnit();
-        AIWorkerAllocator.getInstance(this.aiPlayer).addWorker(id);
+        this.workerAllocator.addWorker(id);
         let worker = this.workerAllocator.getByUnit(id);
         if (worker != null) {
             this.workerGroups.idleIndexes.push(worker);
@@ -61,7 +61,7 @@ export class AIWorkerHandler {
 
     private workerRemoverAction() {
         let id = GetDyingUnit();
-        let worker = AIWorkerAllocator.getInstance(this.aiPlayer).popByUnit(id);
+        let worker = this.workerAllocator.popByUnit(id);
         if (worker != null) {
             this.workerGroups.clearWorker(worker.worker);
             this.updateOrdersForWorkers()
@@ -102,7 +102,7 @@ export class AIWorkerHandler {
                     this.performWorkerOrder(value, WorkerOrders.ORDER_WOOD, group.town, hardReset);
                 }
                 if (group.orderType == WorkerOrders.ORDER_BUILD) {
-                    this.performWorkerOrder(value, this.workerTypes.builderIdleOrder, group.town, false);
+                    this.performWorkerOrder(value, this.aiPlayer.workerTypes.builderIdleOrder, group.town, false);
                 }
             }
         }

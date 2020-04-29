@@ -2,21 +2,21 @@ import {Worker} from "./Worker";
 import {Town} from "../Towns/Town";
 import {Quick} from "../../TreeLib/Quick";
 import {AITownAllocator} from "../Towns/AITownAllocator";
-import {WorkerTypes} from "./WorkerTypes";
 import {WorkerGroup} from "./WorkerGroup";
 import {WorkerOrders} from "./WorkerOrders";
+import {AIPlayerHolder} from "../Races/AIPlayerHolder";
 
 export class AIWorkerGroups {
     private static ids: AIWorkerGroups[] = [];
 
-    public static getInstance(aiPlayer: player, workerTypes: WorkerTypes): AIWorkerGroups {
-        if (this.ids[GetPlayerId(aiPlayer)] == null) {
-            this.ids[GetPlayerId(aiPlayer)] = new AIWorkerGroups(aiPlayer, workerTypes);
+    public static getInstance(aiPlayer: AIPlayerHolder): AIWorkerGroups {
+        if (this.ids[GetPlayerId(aiPlayer.aiPlayer)] == null) {
+            this.ids[GetPlayerId(aiPlayer.aiPlayer)] = new AIWorkerGroups(aiPlayer);
         }
-        return this.ids[GetPlayerId(aiPlayer)];
+        return this.ids[GetPlayerId(aiPlayer.aiPlayer)];
     }
 
-    constructor(public aiPlayer: player, public workerTypes: WorkerTypes) {
+    constructor(public aiPlayer: AIPlayerHolder) {
     }
 
     public idleIndexes: Worker[] = [];
@@ -55,11 +55,11 @@ export class AIWorkerGroups {
         for (let i = group.workers.length; i < group.amountOfWorkers; i++) {
             let worker: Worker | undefined;
             if (group.orderType == WorkerOrders.ORDER_GOLDMINE) {
-                worker = this.popIdleByUnitType(this.workerTypes.goldMiner)
+                worker = this.popIdleByUnitType(this.aiPlayer.workerTypes.goldMiner)
             } else if (group.orderType == WorkerOrders.ORDER_WOOD) {
-                worker = this.popIdleByUnitType(this.workerTypes.woodMiner)
+                worker = this.popIdleByUnitType(this.aiPlayer.workerTypes.woodMiner)
             } else if (group.orderType == WorkerOrders.ORDER_BUILD) {
-                worker = this.popIdleByUnitType(this.workerTypes.builder)
+                worker = this.popIdleByUnitType(this.aiPlayer.workerTypes.builder)
             }
 
             if (worker != null) {

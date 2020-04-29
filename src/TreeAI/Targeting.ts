@@ -49,7 +49,7 @@ export namespace Targeting {
         return target;
     }
 
-    export function GetStartUnits(aiPlayer, ...startingUnits: string[]) {
+    export function GetStartUnits(aiPlayer: player, ...startingUnits: string[]) {
         let loc = Point.fromLocationClean(GetStartLocationLoc(GetPlayerStartLocation(aiPlayer)));
         return GetUnitsOfTypesAroundPointInRange(loc, 2048, ...startingUnits)
     }

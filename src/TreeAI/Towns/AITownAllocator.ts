@@ -4,21 +4,22 @@ import {GetUnitsOfTypesAroundPointInRange, InverseFourCC} from "../../TreeLib/Mi
 import {Targeting} from "../Targeting";
 import {Town} from "./Town";
 import {DistValue} from "../DistValue";
+import {AIPlayerHolder} from "../Races/AIPlayerHolder";
 
 export class AITownAllocator {
     private static ids: AITownAllocator[] = [];
 
-    public static getInstance(aiPlayer: player) {
-        if (this.ids[GetPlayerId(aiPlayer)] == null) {
-            this.ids[GetPlayerId(aiPlayer)] = new AITownAllocator(aiPlayer);
+    public static getInstance(aiPlayer: AIPlayerHolder): AITownAllocator {
+        if (this.ids[GetPlayerId(aiPlayer.aiPlayer)] == null) {
+            this.ids[GetPlayerId(aiPlayer.aiPlayer)] = new AITownAllocator(aiPlayer);
         }
-        return this.ids[GetPlayerId(aiPlayer)];
+        return this.ids[GetPlayerId(aiPlayer.aiPlayer)];
     }
 
 
-    constructor(public aiPlayer: player) {
-        let halls = Targeting.GetStartUnits(aiPlayer, ...Object.keys(Ids.HallIds));
-        let mines = Targeting.GetStartUnits(aiPlayer, ...Object.keys(Ids.GoldmineIds));
+    constructor(public aiPlayer: AIPlayerHolder) {
+        let halls = Targeting.GetStartUnits(aiPlayer.aiPlayer, ...Object.keys(Ids.HallIds));
+        let mines = Targeting.GetStartUnits(aiPlayer.aiPlayer, ...Object.keys(Ids.GoldmineIds));
 
         this.towns.push(new Town(halls[0], mines[0]));
     }
@@ -58,6 +59,6 @@ export class AITownAllocator {
     }
 
     First() {
-        return this[0];
+        return this.towns[0];
     }
 }

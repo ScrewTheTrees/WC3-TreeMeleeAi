@@ -2,19 +2,20 @@ import {Targeting} from "../Targeting";
 import {Ids} from "../Ids";
 import {Worker} from "./Worker";
 import {Quick} from "../../TreeLib/Quick";
+import {AIPlayerHolder} from "../Races/AIPlayerHolder";
 
 export class AIWorkerAllocator {
     private static ids: AIWorkerAllocator[] = [];
 
-    public static getInstance(aiPlayer: player) {
-        if (this.ids[GetPlayerId(aiPlayer)] == null) {
-            this.ids[GetPlayerId(aiPlayer)] = new AIWorkerAllocator(aiPlayer);
+    public static getInstance(aiPlayer: AIPlayerHolder): AIWorkerAllocator {
+        if (this.ids[GetPlayerId(aiPlayer.aiPlayer)] == null) {
+            this.ids[GetPlayerId(aiPlayer.aiPlayer)] = new AIWorkerAllocator(aiPlayer);
         }
-        return this.ids[GetPlayerId(aiPlayer)];
+        return this.ids[GetPlayerId(aiPlayer.aiPlayer)];
     }
 
-    constructor(public aiPlayer: player) {
-        let peons = Targeting.GetStartUnits(aiPlayer, ...Object.keys(Ids.PeonIds));
+    constructor(public aiPlayer: AIPlayerHolder) {
+        let peons = Targeting.GetStartUnits(aiPlayer.aiPlayer, ...Object.keys(Ids.PeonIds));
         for (let i = 0; i < peons.length; i++) {
             this.workers.push(new Worker(peons[i]));
         }
