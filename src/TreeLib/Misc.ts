@@ -76,7 +76,7 @@ export function GetUnitsOfTypesAroundPointInRange(point: Point, range: number, .
     return units;
 }
 
-export function GetUnitsOfTypeByPlayer(unitType: number, player: player) {
+export function GetAliveUnitsOfTypeByPlayer(unitType: number, player: player) {
     let f = Filter(() => {
         return (GetUnitTypeId(GetFilterUnit()) == unitType);
     });
@@ -85,7 +85,7 @@ export function GetUnitsOfTypeByPlayer(unitType: number, player: player) {
     let unit = FirstOfGroup(g);
     let arr: unit[] = [];
     while (unit != null) {
-        arr.push(unit);
+        if (IsUnitAliveBJ(unit)) arr.push(unit);
         GroupRemoveUnit(g, unit);
         unit = FirstOfGroup(g)
     }

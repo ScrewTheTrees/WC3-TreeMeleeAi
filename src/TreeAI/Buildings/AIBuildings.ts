@@ -29,8 +29,8 @@ export class AIBuildings {
 
     private readonly onFinish: trigger;
 
-    public onStartConstructCallbacks: {(building: Building): void}[] = [];
-    public onFinishConstructCallbacks: {(building: Building): void}[] = [];
+    public onStartConstructCallbacks: { (building: Building): void }[] = [];
+    public onFinishConstructCallbacks: { (building: Building): void }[] = [];
 
     private townAllocator: AITownAllocator;
 
@@ -73,6 +73,14 @@ export class AIBuildings {
         TriggerRegisterPlayerUnitEvent(this.onFinish, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_RESEARCH_FINISH, null);
         TriggerRegisterPlayerUnitEvent(this.onFinish, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_RESEARCH_CANCEL, null);
         TriggerAddAction(this.onFinish, () => this.onFinishAction());
+
+        let units = Quick.GroupToUnitArrayDestroy(GetUnitsOfPlayerAll(this.aiPlayer.aiPlayer));
+        for (let i = 0; i < units.length; i++) {
+            let building = units[i];
+            this.townAllocator.makeTown(building);
+            let building1 = new Building(building, BuildingState.IDLE, this.townAllocator.getClosestTown(Point.fromWidget(building)).value);
+            this.buildings.push(building1);//Make town
+        }
     }
 
     private onStartConstructAction() {
@@ -111,7 +119,7 @@ export class AIBuildings {
         let byHall = this.getByHall(GetTriggerUnit());
         if (byHall != null) {
             byHall.status = BuildingState.UPGRADING;
-            byHall.targetType = "?" ;
+            byHall.targetType = "?";
         }
     }
 
@@ -151,4 +159,25 @@ export class AIBuildings {
         return null;
     }
 
+    public countInTraining(unitType: number) {
+        let count = 0;
+        for (let i = 0; i < this.buildings.length; i++) {
+            let build = this.buildings[i];
+            if (build.status == BuildingState.TRAINING && build.targetType == InverseFourCC(unitType)) {
+                count += 1;
+            }
+        }
+        return count;
+    }
+
+    public getIdleBuildingsOfType(buildingType: number) {
+        let retBuild: Building[] = [];
+        for (let i = 0; i < this.buildings.length; i++) {
+            let build = this.buildings[i];
+            if (build.status == BuildingState.IDLE && GetUnitTypeId(build.building) == buildingType) {
+                retBuild.push(build);
+            }
+        }
+        return retBuild;
+    }
 }

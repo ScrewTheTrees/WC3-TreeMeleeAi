@@ -1,0 +1,26 @@
+Buildings:
+    Tracking of buildings is quite the task, a lot of triggers are related to a lot of buildings, and some things are
+    not trackable like upgrading having no way to get the upgrade type, this has to be manually applied.
+
+Towns:
+    This is a leftover for how traditional melee AIs handled, each town is essentially a goldmine and its hall so that
+    is what my system is trying to emulate, this should help with making sure each town can properly build towers.
+    Hopefully it will also help with creating expansions.
+
+Workers:
+    The worker system uses an allocator and certain configuration to properly function, since each race handles workers
+    differently this was quite necessary. since it might need additional configuration for custom races.
+    Workers use a type of state machine and a worker pool, a worker generally only do one thing at once, and when it
+    cannot do that functionality it has to fall back on a backup. Worker pools are generally ways to configure what units
+    should be doing at any time, like, 3 units on the goldmine, 1 unit is allocated for construction and then another
+    two on the goldmine. Naturally this "construction" unit will go to the fallback order when there is nothing to construct.
+    Units without any allocation will also do the fallback order but are flexible for other tasks such as construction.
+
+Constructor:
+    The constructor system had to be developed on the side of workers, it was too complex of a task to keep them together.
+    It operates using a ticket system that will be executed in the order of being added.
+    Only one building will be started at a time, otherwise there is collisions of priority and building locations.
+
+Training:
+    This system operates on another ticket priority ticket system, but unlike the vanilla system, this system treats units
+    like a type of "stream",

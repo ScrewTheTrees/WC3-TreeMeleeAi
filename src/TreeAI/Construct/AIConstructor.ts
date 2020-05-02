@@ -7,7 +7,7 @@ import {AIWorkerGroups} from "../Workers/AIWorkerGroups";
 import {ConstructionTicket} from "./ConstructionTicket";
 import {AITownBuildingLocation} from "../Towns/AITownBuildingLocation";
 import {WorkerOrders} from "../Workers/WorkerOrders";
-import {GetUnitsOfTypeByPlayer} from "../../TreeLib/Misc";
+import {GetAliveUnitsOfTypeByPlayer} from "../../TreeLib/Misc";
 import {AIWorkerHandler} from "../Workers/AIWorkerHandler";
 import {AIBuildings} from "../Buildings/AIBuildings";
 import {Entity} from "../../TreeLib/Entity";
@@ -64,9 +64,9 @@ export class AIConstructor extends Entity {
         if (!town) town = this.townAllocator.getRandomTown();
         if (this.constructionList.listNoTarget().length == 0 && this.resolveUnitsInConstruction(buildingType) < amount) {
             this.updateAllTickets();
-            if (this.aiPlayer.stats.canAffordUnitVirtual(buildingType)) {
-                let worker = this.workerGroups.getIdleConstructor();
-                if (worker) {
+            let worker = this.workerGroups.getIdleConstructor();
+            if (worker) {
+                if (this.aiPlayer.stats.canAffordUnitVirtual(buildingType)) {
                     let ticket = new ConstructionTicket(worker, buildingType, town, size);
                     this.constructionList.tickets.push(ticket);
                     this.updateConstructionTicket(ticket);
@@ -74,6 +74,10 @@ export class AIConstructor extends Entity {
             }
             this.updateAllTickets();
         }
+    }
+
+    public upgradeBuilding(fromBuildingType: number, toBuildingType: number, town: Town | undefined) {
+
     }
 
     private updateAllTickets() {
@@ -103,7 +107,7 @@ export class AIConstructor extends Entity {
     }
 
     private resolveUnitsInConstruction(unitType: number) {
-        return GetUnitsOfTypeByPlayer(unitType, this.aiPlayer.aiPlayer).length;
+        return GetAliveUnitsOfTypeByPlayer(unitType, this.aiPlayer.aiPlayer).length;
     }
 
     public getUnusedTicketByUnitType(unitType: number) {
