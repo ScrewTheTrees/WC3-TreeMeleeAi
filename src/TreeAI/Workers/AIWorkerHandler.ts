@@ -1,7 +1,6 @@
 import {Worker} from "./Worker";
 import {Town} from "../Towns/Town";
 import {Targeting} from "../Targeting";
-import {Point} from "../../TreeLib/Utility/Point";
 import {InverseFourCC, IsValidUnit} from "../../TreeLib/Misc";
 import {Ids} from "../Ids";
 import {WorkerGroup} from "./WorkerGroup";
@@ -81,7 +80,7 @@ export class AIWorkerHandler {
                 IssueTargetOrder(worker.worker, "harvest", town.mineUnit);
                 worker.orders = WorkerOrders.ORDER_GOLDMINE;
             } else if (orderType == WorkerOrders.ORDER_WOOD) {
-                let closestTree = Targeting.GetClosestTreeToLocationInRange(Point.fromWidget(town.hallUnit), 4096);
+                let closestTree = Targeting.GetClosestTreeToLocationInRange(town.treePoint, 4096);
                 if (closestTree != null) {
                     IssueTargetOrder(worker.worker, "harvest", closestTree);
                     worker.orders = WorkerOrders.ORDER_WOOD;
@@ -112,7 +111,7 @@ export class AIWorkerHandler {
     }
 
     public iterateIdles() {
-        this.iterateOrders(new WorkerGroup(0, WorkerOrders.ORDER_WOOD, AITownAllocator.getInstance(this.aiPlayer).First(), ...this.workerGroups.idleIndexes));
+        this.iterateOrders(new WorkerGroup(0, WorkerOrders.ORDER_WOOD, AITownAllocator.getInstance(this.aiPlayer).getRandomTown(), ...this.workerGroups.idleIndexes));
     }
 
     public updateOrdersForWorkers(hardReset: boolean = false) {

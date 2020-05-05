@@ -12,6 +12,7 @@ import {TrainingTicket} from "../Training/TrainingTicket";
 import {AIBuildings} from "../Buildings/AIBuildings";
 import {BaseUnits} from "../../TreeLib/GeneratedBase/BaseUnits";
 import {ConstructionPriority} from "../Construct/ConstructionPriority";
+import {TreeLib} from "../../TreeLib/TreeLib";
 
 
 export class AIRaceHuman extends AIRaceAbstract {
@@ -50,45 +51,52 @@ export class AIRaceHuman extends AIRaceAbstract {
         if (!this.townAllocator.First().isHallAlive()) {
             this.constructer.constructBuilding(FourCC(BaseUnits.TOWNHALL), 1, this.townAllocator.First(), TownBuildingSizes.VERY_PRECISE, ConstructionPriority.CLOSE_TO_MINE);
         }
+        this.constructer.constructBuilding(FourCC(BaseUnits.FARM), math.floor((this.aiPlayer.stats.getCurrentFood() / 6) * 1.1), undefined, TownBuildingSizes.SPREAD);
         this.constructer.constructBuilding(FourCC(BaseUnits.ALTAROFKINGS), 1, this.townAllocator.First());
-        this.constructer.constructBuilding(FourCC(BaseUnits.FARM), math.floor((this.aiPlayer.stats.getCurrentFood() / 6) * 1.2), undefined, TownBuildingSizes.SPREAD);
         this.constructer.constructBuilding(FourCC(BaseUnits.HUMANBARRACKS), 1, this.townAllocator.First());
 
-        this.constructer.constructBuilding(FourCC(BaseUnits.HUMANLUMBERMILL), 1, this.townAllocator.First(), TownBuildingSizes.DENSE, ConstructionPriority.CLOSE_TO_TREE);
+        this.constructer.constructBuilding(FourCC(BaseUnits.HUMANLUMBERMILL), 1, this.townAllocator.First(), TownBuildingSizes.VERY_PRECISE, ConstructionPriority.CLOSE_TO_TREE);
         this.constructer.constructBuilding(FourCC(BaseUnits.BLACKSMITH), 1, this.townAllocator.First());
 
-        if (this.buildings.getFinishedBuildingsOfType(FourCC(BaseUnits.HUMANLUMBERMILL)).length > 0) {
+        this.constructer.constructThenUpgrade(FourCC(BaseUnits.SCOUTTOWER), FourCC(BaseUnits.HUMANARCANETOWER), 1,
+            this.townAllocator.First(), TownBuildingSizes.DENSE, ConstructionPriority.BETWEEN_MINE_AND_HALL);
+
+        if (this.aiPlayer.stats.getCurrentWood() > 160 && this.aiPlayer.stats.getCurrentGold() > 500) {
             this.constructer.constructThenUpgrade(FourCC(BaseUnits.SCOUTTOWER), FourCC(BaseUnits.GUARDTOWER), 2,
                 this.townAllocator.First(), TownBuildingSizes.DENSE, ConstructionPriority.BETWEEN_MINE_AND_HALL);
         }
+
+        this.constructer.constructBuilding(FourCC(BaseUnits.ARCANEVAULT), 1, this.townAllocator.First(), undefined, ConstructionPriority.CLOSE_TO_MINE);
+
         if (!this.hasTier2Hall() && this.hasTier1Hall()) {
             this.constructer.upgradeBuilding(FourCC(BaseUnits.KEEP), 1, undefined);
+        }
+        if (!this.hasTier3Hall() && this.hasTier2Hall()) {
+            this.constructer.upgradeBuilding(FourCC(BaseUnits.CASTLE), 1, undefined);
         }
 
         this.constructer.constructBuilding(FourCC(BaseUnits.HUMANBARRACKS), 2, this.townAllocator.First());
 
-        this.trainer.addTicket(new TrainingTicket(FourCC(BaseUnits.PEASANT), 15));
+        this.trainer.addTicket(new TrainingTicket(FourCC(BaseUnits.PEASANT), 13));
         this.trainer.addTicket(new TrainingTicket(FourCC(BaseUnits.MOUNTAINKING), 1));
         this.trainer.addTicket(new TrainingTicket(FourCC(BaseUnits.FOOTMAN), 4));
-        if (this.buildings.getFinishedBuildingsOfType(FourCC(BaseUnits.BLACKSMITH))) {
-            this.trainer.addTicket(new TrainingTicket(FourCC(BaseUnits.RIFLEMAN), 4));
-        }
+        this.trainer.addTicket(new TrainingTicket(FourCC(BaseUnits.RIFLEMAN), 4));
 
     }
 
     public hasTier1Hall() {
-        return (this.buildings.getAllBuildingsOfType(FourCC("htow")).length > 0
-            || this.buildings.getAllBuildingsOfType(FourCC("hkee")).length > 0
-            || this.buildings.getAllBuildingsOfType(FourCC("hcas")).length > 0);
+        return (this.buildings.getFinishedBuildingsOfType(FourCC("htow")).length > 0
+            || this.buildings.getFinishedBuildingsOfType(FourCC("hkee")).length > 0
+            || this.buildings.getFinishedBuildingsOfType(FourCC("hcas")).length > 0);
     }
 
     public hasTier2Hall() {
-        return (this.buildings.getAllBuildingsOfType(FourCC("hkee")).length > 0
-            || this.buildings.getAllBuildingsOfType(FourCC("hcas")).length > 0);
+        return (this.buildings.getFinishedBuildingsOfType(FourCC("hkee")).length > 0
+            || this.buildings.getFinishedBuildingsOfType(FourCC("hcas")).length > 0);
     }
 
     public hasTier3Hall() {
-        return (this.buildings.getAllBuildingsOfType(FourCC("hcas")).length > 0)
+        return (this.buildings.getFinishedBuildingsOfType(FourCC("hcas")).length > 0)
     }
 
 }

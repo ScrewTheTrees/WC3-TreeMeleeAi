@@ -30,8 +30,6 @@ export class Timers {
                 callback();
             });
         });
-
-        print(TreeLib.getIntroductionString());
     }
 
     public addFastTimerCallback(func: Function) {

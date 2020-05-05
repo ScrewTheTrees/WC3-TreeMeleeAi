@@ -78,13 +78,13 @@ export class AIConstructor extends Entity {
     }
 
     public constructBuilding(buildingType: number, amount: number, town: Town | undefined,
-                             size: TownBuildingSizes = TownBuildingSizes.DEFAULT,
-                             priority: ConstructionPriority = ConstructionPriority.NORMAL
+                             size?: TownBuildingSizes,
+                             priority?: ConstructionPriority
     ) {
         if (!town) town = this.townAllocator.getRandomTown();
         if (this.constructionList.listNoTarget().length == 0 && this.resolveUnitsInConstruction(buildingType) < amount) {
             this.updateAllTickets();
-            let worker = this.workerGroups.getIdleConstructor();
+            let worker = this.workerGroups.getIdleConstructor(town);
             if (worker) {
                 if (this.aiPlayer.stats.canAffordUnitVirtual(buildingType)) {
                     let ticket = new ConstructionTicket(worker, buildingType, town, size, priority);
@@ -188,8 +188,9 @@ export class AIConstructor extends Entity {
 
     private removeInactiveTicketTargets() {
         this.constructionList.tickets.forEach((ticket) => {
+            ticket.town = ticket.town || this.townAllocator.getRandomTown();
             if (ticket.isWorkerDead()) {
-                let idleConstructor = this.workerGroups.getIdleConstructor();
+                let idleConstructor = this.workerGroups.getIdleConstructor(ticket.town);
                 if (idleConstructor) {
                     ticket.worker = idleConstructor;
                     if (ticket.target) {

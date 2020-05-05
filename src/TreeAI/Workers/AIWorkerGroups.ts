@@ -5,6 +5,7 @@ import {AITownAllocator} from "../Towns/AITownAllocator";
 import {WorkerGroup} from "./WorkerGroup";
 import {WorkerOrders} from "./WorkerOrders";
 import {AIPlayerHolder} from "../Races/AIPlayerHolder";
+import {Point} from "../../TreeLib/Utility/Point";
 
 export class AIWorkerGroups {
     private static ids: AIWorkerGroups[] = [];
@@ -68,16 +69,20 @@ export class AIWorkerGroups {
         }
     }
 
-    public getIdleConstructor() {
+    public getIdleConstructor(town: Town) {
         let retvar: Worker | undefined;
 
         for (let i = 0; i < this.idleIndexes.length; i++) {
             let worker = this.idleIndexes[i];
-            if (worker.orders == WorkerOrders.ORDER_WOOD
+            if (worker.orders == WorkerOrders.ORDER_WOOD  //Eglible to be constructors
                 || (worker.orders == WorkerOrders.ORDER_GOLDMINE && this.aiPlayer.workerTypes.goldMinerCanBuild)) {
-                return worker; //Idle workers best workers.
+                if (retvar == undefined || Point.fromWidget(retvar.worker).distanceTo(town.place) < Point.fromWidget(worker.worker).distanceTo(town.place)) //Get closest one
+                    retvar =  worker; //Idle workers best workers.
             }
         }
+        if (retvar) return retvar;
+
+        //Find alternate
         for (let i = 0; i < this.workerGroups.length; i++) {
             let workerGroup = this.workerGroups[i];
             if (workerGroup.orderType == WorkerOrders.ORDER_WOOD //Wood workers are always allowed

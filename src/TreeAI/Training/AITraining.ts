@@ -77,9 +77,9 @@ export class AITraining extends Entity {
                     let trainer = availableUnits.pop();
                     if (trainer != null) {
                         IssueImmediateOrderById(trainer.building, trainingTicket.targetType);
-                        this.aiPlayer.stats.reduceVirtualByUnit(FourCC(trainer.targetType));
+                        this.aiPlayer.stats.reduceVirtualByUnit(trainingTicket.targetType);
                     }
-                }, Logger.critical);
+                }, Logger.warning);
             } else {
                 break;
             }

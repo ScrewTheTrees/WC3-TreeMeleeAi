@@ -1,3 +1,5 @@
+import {InverseFourCC} from "../TreeLib/Misc";
+
 export class AIPlayerStats {
     constructor(public aiPlayer: player) {
     }
@@ -34,9 +36,10 @@ export class AIPlayerStats {
         return GetAIDifficulty(this.aiPlayer) == AI_DIFFICULTY_INSANE;
     }
 
-    public canAffordUnitVirtual(unitType: number) {
+    public canAffordUnitVirtual(unitType: number) {4
         if (IsHeroUnitId(unitType)) {
-            return true; //Is hero
+            this.reduceVirtualByUnit(unitType);
+            return true;
         }
         let newVar = (this.virtualGold >= GetUnitGoldCost(unitType) && this.virtualWood >= GetUnitWoodCost(unitType));
         this.reduceVirtualByUnit(unitType);

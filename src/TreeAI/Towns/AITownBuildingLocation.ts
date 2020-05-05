@@ -58,7 +58,7 @@ export class AITownBuildingLocation {
     public static getSearchPoint(town: Town, priority: ConstructionPriority): Point {
         switch (priority) {
             case ConstructionPriority.CLOSE_TO_TREE:
-                let tree = GetClosestTreeToLocationInRange(town.place, 4096);
+                let tree = GetClosestTreeToLocationInRange(town.treePoint, 4096);
                 if (tree) return Point.fromWidget(tree);
                 break;
             case ConstructionPriority.CLOSE_TO_MINE:
@@ -67,7 +67,16 @@ export class AITownBuildingLocation {
             case ConstructionPriority.BETWEEN_MINE_AND_HALL:
                 if (town.isMineAlive() && town.isHallAlive()) {
                     return Point.fromWidget(town.mineUnit).getBetween(Point.fromWidget(town.hallUnit));
-                } else return town.place;
+                }
+                break;
+            case ConstructionPriority.HALL_AWAY_FROM_MINE:
+                if (town.isMineAlive() && town.isHallAlive()) {
+                    let mine = Point.fromWidget(town.mineUnit);
+                    let hall = Point.fromWidget(town.hallUnit);
+                    let dist = mine.distanceTo(hall) / 4;
+                    let dir = mine.directionTo(hall);
+                    return Point.fromWidget(town.hallUnit).polarProject(dist, dir);
+                }
                 break;
 
         }
