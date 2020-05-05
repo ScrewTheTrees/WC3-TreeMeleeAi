@@ -11,5 +11,6 @@ export class TreeLib {
     public static getMapVersion(): string[] {
         // @ts-ignore
         if (mapVersion) return mapVersion; //Supplied by operation.js and build.json
+        else return [];
     }
 }
