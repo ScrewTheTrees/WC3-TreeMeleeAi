@@ -7,7 +7,6 @@ export class TreeLib {
         return this.libName + " " + this.version + " - " + this.creator;
     }
 
-    // @ts-ignore
     public static getMapVersion(): string[] {
         // @ts-ignore
         if (mapVersion) return mapVersion; //Supplied by operation.js and build.json
