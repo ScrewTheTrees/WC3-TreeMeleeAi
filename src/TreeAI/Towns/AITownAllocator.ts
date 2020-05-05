@@ -27,7 +27,7 @@ export class AITownAllocator {
     public towns: Town[] = [];
 
     public makeTown(building: unit) {
-        if (Ids.IsHallId(InverseFourCC(GetUnitTypeId(building)))) {
+        if (Ids.IsHallId(InverseFourCC(GetUnitTypeId(building))) && !this.isAlreadyTown(building)) {
             let point = Point.fromWidget(building);
             let town = this.getClosestTown(point);
             if (town.distance > 2048) {
@@ -37,6 +37,15 @@ export class AITownAllocator {
                 town.value.hallUnit = building;
             }
         }
+    }
+
+    private isAlreadyTown(hall: unit) {
+        for (let i = 0; i < this.towns.length; i++) {
+            if (this.towns[i].hallUnit == hall) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public getClosestTown(loc: Point): DistValue<Town> {

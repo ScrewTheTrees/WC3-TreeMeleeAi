@@ -5,12 +5,15 @@ import {WorkerOrders} from "./WorkerOrders";
 
 export class WorkerGroup {
     public workers: Worker[] = [];
+    public orderType: WorkerOrders;
 
     constructor(public amountOfWorkers: number,
-                public orderType: WorkerOrders,
+                orderType: WorkerOrders.ORDER_GOLDMINE | WorkerOrders.ORDER_WOOD,
                 public town: Town,
                 ...workers: Worker[]) {
+        this.orderType = orderType;
         this.workers = workers;
+
     }
 
     public popByWorkerUnit(worker: unit) {
@@ -21,5 +24,17 @@ export class WorkerGroup {
                 return value;
             }
         }
+    }
+
+    public findIdleWorker(workerType: string) {
+        for (let j = 0; j < this.workers.length; j++) {
+            let worker = this.workers[j];
+            if (worker.orders != WorkerOrders.ORDER_DRAFTED //Dont allow drafted
+                && worker.orders != WorkerOrders.ORDER_BUILD //Dont allow busy workers.
+                && worker.unitType == workerType) { //Is of builder type
+                    return worker;
+            }
+        }
+        return undefined;
     }
 }

@@ -1,10 +1,15 @@
 import {AITownAllocator} from "../Towns/AITownAllocator";
 import {Point} from "../../TreeLib/Utility/Point";
 import {Quick} from "../../TreeLib/Quick";
-import {InverseFourCC} from "../../TreeLib/Misc";
+import {InverseFourCC, IsOfAnyType} from "../../TreeLib/Misc";
 import {Building} from "./Building";
 import {BuildingState} from "./BuildingState";
 import {AIPlayerHolder} from "../Races/AIPlayerHolder";
+import {Town} from "../Towns/Town";
+import {Ids} from "../Ids";
+import IsHallId = Ids.IsHallId;
+import {GetUpgradeRegistry} from "../Construct/UpgradeRegistry";
+import {GetTrainRegistry} from "../Training/TrainingRegistry";
 
 export class AIBuildings {
     private static ids: AIBuildings[] = [];
@@ -119,7 +124,7 @@ export class AIBuildings {
         let byHall = this.getByHall(GetTriggerUnit());
         if (byHall != null) {
             byHall.status = BuildingState.UPGRADING;
-            byHall.targetType = "?";
+            byHall.targetType = InverseFourCC(GetUnitTypeId(byHall.building));
         }
     }
 
@@ -170,11 +175,86 @@ export class AIBuildings {
         return count;
     }
 
+    public getFinishedBuildingsOfType(buildingType: number) {
+        let retBuild: Building[] = [];
+        for (let i = 0; i < this.buildings.length; i++) {
+            let build = this.buildings[i];
+            if (build.status != BuildingState.CONSTRUCTING
+                && build.status != BuildingState.UPGRADING
+                && GetUnitTypeId(build.building) == buildingType) {
+                retBuild.push(build);
+            }
+        }
+        return retBuild;
+    }
+
+    public getBuildingsOfTypeIncludePreRequisites(buildingType: number) {
+        let retBuild: Building[] = [];
+
+        let types = this.getPreRequisites(InverseFourCC(buildingType));
+        let numTypes: number[] = [];
+        for (let i = 0; i < types.length; i++) {
+            numTypes.push(FourCC(types[i]));
+        }
+        for (let i = 0; i < this.buildings.length; i++) {
+            let build = this.buildings[i];
+            if (IsOfAnyType(GetUnitTypeId(build.building), ...numTypes)) {
+                retBuild.push(build);
+            }
+        }
+        return retBuild;
+    }
+
+
+    public getPreRequisites(id: string) {
+        let preReqs: string[] = [];
+        preReqs.push(id);
+        let registry = this.getRegistry(id);
+        if (registry) {
+            for (let i = 0; i < registry.length; i++) {
+                let checkReg = InverseFourCC(registry[i]);
+                preReqs.push(checkReg);
+                preReqs.push(...this.getPreRequisites(checkReg))
+            }
+        }
+
+        return preReqs;
+    }
+
+    public getRegistry(id: string) {
+        if (GetUpgradeRegistry(id).length > 0) return GetUpgradeRegistry(id);
+        else if (GetTrainRegistry(id).length > 0) return GetTrainRegistry(id);
+
+        return undefined;
+    }
+
     public getIdleBuildingsOfType(buildingType: number) {
         let retBuild: Building[] = [];
         for (let i = 0; i < this.buildings.length; i++) {
             let build = this.buildings[i];
             if (build.status == BuildingState.IDLE && GetUnitTypeId(build.building) == buildingType) {
+                retBuild.push(build);
+            }
+        }
+        return retBuild;
+    }
+
+    public getAllBuildingsOfType(buildingType: number) {
+        let retBuild: Building[] = [];
+        for (let i = 0; i < this.buildings.length; i++) {
+            let build = this.buildings[i];
+            if (GetUnitTypeId(build.building) == buildingType) {
+                retBuild.push(build);
+            }
+        }
+        return retBuild;
+    }
+
+    public getIdleBuildingsOfTypeInTown(buildingType: number, town: Town) {
+        let retBuild: Building[] = [];
+        for (let i = 0; i < this.buildings.length; i++) {
+            let build = this.buildings[i];
+            if (build.status == BuildingState.IDLE && GetUnitTypeId(build.building) == buildingType && build.town == town) {
                 retBuild.push(build);
             }
         }

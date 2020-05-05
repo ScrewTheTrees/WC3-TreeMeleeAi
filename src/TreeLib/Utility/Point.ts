@@ -34,6 +34,10 @@ export class Point {
         return this;
     }
 
+    public getBetween(offset: Point): Point {
+        return new Point((this.x + offset.x) / 2, (this.y + offset.y) / 2);
+    }
+
     public updateToLocation(inputLoc: location) {
         this.x = GetLocationX(inputLoc);
         this.y = GetLocationY(inputLoc);

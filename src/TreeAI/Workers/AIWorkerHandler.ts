@@ -10,6 +10,7 @@ import {AIWorkerAllocator} from "./AIWorkerAllocator";
 import {AIWorkerGroups} from "./AIWorkerGroups";
 import {AITownAllocator} from "../Towns/AITownAllocator";
 import {AIPlayerHolder} from "../Races/AIPlayerHolder";
+import {Delay} from "../../TreeLib/Utility/Delay";
 
 export class AIWorkerHandler {
     private static ids: AIWorkerHandler[] = [];
@@ -51,12 +52,14 @@ export class AIWorkerHandler {
 
     private workerAdderAction() {
         let id = GetTrainedUnit();
-        this.workerAllocator.addWorker(id);
-        let worker = this.workerAllocator.getByUnit(id);
-        if (worker != null) {
-            this.workerGroups.idleIndexes.push(worker);
-            this.updateOrdersForWorkers()
-        }
+        Delay.addDelay(() => {
+            this.workerAllocator.addWorker(id);
+            let worker = this.workerAllocator.getByUnit(id);
+            if (worker != null) {
+                this.workerGroups.idleIndexes.push(worker);
+                this.updateOrdersForWorkers()
+            }
+        }, 0.01);
     }
 
     private workerRemoverAction() {
@@ -78,7 +81,7 @@ export class AIWorkerHandler {
                 IssueTargetOrder(worker.worker, "harvest", town.mineUnit);
                 worker.orders = WorkerOrders.ORDER_GOLDMINE;
             } else if (orderType == WorkerOrders.ORDER_WOOD) {
-                let closestTree = Targeting.GetClosestTreeToLocationInRange(Point.fromWidget(town.mineUnit), 4096);
+                let closestTree = Targeting.GetClosestTreeToLocationInRange(Point.fromWidget(town.hallUnit), 4096);
                 if (closestTree != null) {
                     IssueTargetOrder(worker.worker, "harvest", closestTree);
                     worker.orders = WorkerOrders.ORDER_WOOD;

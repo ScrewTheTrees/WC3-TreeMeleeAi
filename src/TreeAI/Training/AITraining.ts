@@ -5,6 +5,7 @@ import {GetAliveUnitsOfTypeByPlayer} from "../../TreeLib/Misc";
 import {Building} from "../Buildings/Building";
 import {Entity} from "../../TreeLib/Entity";
 import {Delay} from "../../TreeLib/Utility/Delay";
+import {Logger} from "../../TreeLib/Logger";
 
 export class AITraining extends Entity {
     private static ids: AITraining[] = [];
@@ -70,12 +71,15 @@ export class AITraining extends Entity {
         }
 
         for (let i = 0; i < amountDifference; i++) {
-            if (true) { //this.aiPlayer.stats.canAffordUnit(trainingTicket.targetType)
-                let trainer = availableUnits.pop();
-                if (trainer != null) {
-                    IssueImmediateOrderById(trainer.building, trainingTicket.targetType);
-                    //this.aiPlayer.stats.reduceVirtualByUnit(FourCC(trainer.targetType));
-                }
+            if (this.aiPlayer.stats.canAffordUnit(trainingTicket.targetType)
+                && this.aiPlayer.stats.hasFoodForUnit(trainingTicket.targetType)) {
+                xpcall(() => {
+                    let trainer = availableUnits.pop();
+                    if (trainer != null) {
+                        IssueImmediateOrderById(trainer.building, trainingTicket.targetType);
+                        this.aiPlayer.stats.reduceVirtualByUnit(FourCC(trainer.targetType));
+                    }
+                }, Logger.critical);
             } else {
                 break;
             }

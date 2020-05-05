@@ -58,6 +58,15 @@ export function IsValidUnit(target: unit) {
     return GetUnitTypeId(target) != 0;
 }
 
+export function IsOfAnyType(buildingType: number, ...targetUnitTypes: number[]): boolean {
+    for (let i = 0; i < targetUnitTypes.length; i++) {
+        if (buildingType == targetUnitTypes[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
 export function GetUnitsOfTypesAroundPointInRange(point: Point, range: number, ...unitIds: string[]): unit[] {
     const f = Filter(() => {
         for (let i = 0; i < unitIds.length; i++) {

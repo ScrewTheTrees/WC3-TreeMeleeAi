@@ -1,0 +1,6 @@
+export enum ConstructionPriority {
+    NORMAL = "NORMAL",
+    CLOSE_TO_TREE = "CLOSE_TO_TREE",
+    CLOSE_TO_MINE = "CLOSE_TO_MINE",
+    BETWEEN_MINE_AND_HALL = "BETWEEN_MINE_AND_HALL",
+}

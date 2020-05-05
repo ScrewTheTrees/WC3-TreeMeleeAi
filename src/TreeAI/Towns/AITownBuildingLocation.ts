@@ -1,6 +1,9 @@
 import {Targeting} from "../Targeting";
 import {Point} from "../../TreeLib/Utility/Point";
 import {TownBuildingSizes} from "./TownBuildingSizes";
+import {ConstructionPriority} from "../Construct/ConstructionPriority";
+import GetClosestTreeToLocationInRange = Targeting.GetClosestTreeToLocationInRange;
+import {Town} from "./Town";
 
 export class AITownBuildingLocation {
     public static isPointUnoccupied(point: Point | undefined, sizes: TownBuildingSizes, unitType: number, builderType: number) {
@@ -25,7 +28,11 @@ export class AITownBuildingLocation {
         startX = math.floor(startX / stepSize) * stepSize;
         startY = math.floor(startY / stepSize) * stepSize;
 
-        for (let i = 0; i < 10000; i++) {
+        if (this.isLocUnoccupied(startX, startY, size, unitType, builderType) && !IsTerrainPathable(startX, startY, PATHING_TYPE_PEONHARVESTPATHING)) {
+            return new Point(startX, startY); //Early exit
+        }
+
+        for (let i = 0; i < 100; i += 1) {
             if (this.isLocUnoccupied(startX + x, startY - range, size, unitType, builderType)) {
                 return new Point(startX + x, startY - range)
             }
@@ -46,6 +53,26 @@ export class AITownBuildingLocation {
             }
         }
         return new Point(0, 0);
+    }
+
+    public static getSearchPoint(town: Town, priority: ConstructionPriority): Point {
+        switch (priority) {
+            case ConstructionPriority.CLOSE_TO_TREE:
+                let tree = GetClosestTreeToLocationInRange(town.place, 4096);
+                if (tree) return Point.fromWidget(tree);
+                break;
+            case ConstructionPriority.CLOSE_TO_MINE:
+                if (town.isMineAlive()) return Point.fromWidget(town.mineUnit);
+                break;
+            case ConstructionPriority.BETWEEN_MINE_AND_HALL:
+                if (town.isMineAlive() && town.isHallAlive()) {
+                    return Point.fromWidget(town.mineUnit).getBetween(Point.fromWidget(town.hallUnit));
+                } else return town.place;
+                break;
+
+        }
+
+        return town.place;
     }
 }
 

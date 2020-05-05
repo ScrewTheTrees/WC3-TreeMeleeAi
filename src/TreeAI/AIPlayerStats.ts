@@ -35,6 +35,9 @@ export class AIPlayerStats {
     }
 
     public canAffordUnitVirtual(unitType: number) {
+        if (IsHeroUnitId(unitType)) {
+            return true; //Is hero
+        }
         let newVar = (this.virtualGold >= GetUnitGoldCost(unitType) && this.virtualWood >= GetUnitWoodCost(unitType));
         this.reduceVirtualByUnit(unitType);
         return newVar;
@@ -42,11 +45,24 @@ export class AIPlayerStats {
     }
 
     public canAffordUnit(unitType: number) {
+        if (IsHeroUnitId(unitType)) {
+            return true;
+        }
         return (this.getCurrentGold() >= GetUnitGoldCost(unitType) && this.getCurrentWood() >= GetUnitWoodCost(unitType));
     }
 
+    public hasFoodForUnit(unitType: number) {
+        return (this.getCurrentFood() + GetFoodUsed(unitType)) <= this.getMaxFood();
+    }
+
+
     public reduceVirtualByUnit(unitType: number) {
-        this.virtualGold -= GetUnitGoldCost(unitType);
-        this.virtualWood -= GetUnitWoodCost(unitType);
+        if (IsHeroUnitId(unitType)) { //Is hero
+            this.virtualGold -= 500;
+            this.virtualWood -= 100;
+        } else {
+            this.virtualGold -= GetUnitGoldCost(unitType);
+            this.virtualWood -= GetUnitWoodCost(unitType);
+        }
     }
 }

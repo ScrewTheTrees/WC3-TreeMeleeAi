@@ -1,6 +1,7 @@
 export enum TownBuildingSizes {
-    TINY = 64,
-    SMALL = 192,
-    MEDIUM = 256,
-    LARGE = 512,
+    VERY_PRECISE = 64,
+    DENSE = 128,
+    DEFAULT = 192,
+    SPREAD = 256,
+    VERY_SPREAD = 512,
 }

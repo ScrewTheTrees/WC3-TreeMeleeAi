@@ -25,7 +25,7 @@ export class AIWorkerGroups {
     public popIdleByUnitType(unitType: string) {
         for (let i = 0; i < this.idleIndexes.length; i++) {
             let idleIndex = this.idleIndexes[i];
-            if (idleIndex.unitType == unitType) {
+            if (idleIndex.unitType == unitType && idleIndex.orders != WorkerOrders.ORDER_BUILD) {
                 Quick.Slice(this.idleIndexes, i);
                 return idleIndex;
             }
@@ -42,7 +42,7 @@ export class AIWorkerGroups {
         }
     }
 
-    public set(index: number, amountOfWorkers: number, orderType: WorkerOrders, town: Town | undefined) {
+    public set(index: number, amountOfWorkers: number, orderType: WorkerOrders.ORDER_GOLDMINE | WorkerOrders.ORDER_WOOD, town: Town | undefined) {
         let old = this.workerGroups[index];
         if (old != null) {
             this.idleIndexes.push(...old.workers);
@@ -69,23 +69,40 @@ export class AIWorkerGroups {
     }
 
     public getIdleConstructor() {
-        for (let i = 0; i < this.workerGroups.length; i++) {
-            let workerGroup = this.workerGroups[i];
-            if (workerGroup.orderType == WorkerOrders.ORDER_BUILD) {
-                for (let j = 0; j < workerGroup.workers.length; j++) {
-                    let worker = workerGroup.workers[j];
-                    if (worker.orders != WorkerOrders.ORDER_BUILD && worker.orders != WorkerOrders.ORDER_DRAFTED) {
-                        return worker;
-                    }
-                }
+        let retvar: Worker | undefined;
+
+        for (let i = 0; i < this.idleIndexes.length; i++) {
+            let worker = this.idleIndexes[i];
+            if (worker.orders == WorkerOrders.ORDER_WOOD
+                || (worker.orders == WorkerOrders.ORDER_GOLDMINE && this.aiPlayer.workerTypes.goldMinerCanBuild)) {
+                return worker; //Idle workers best workers.
             }
         }
+        for (let i = 0; i < this.workerGroups.length; i++) {
+            let workerGroup = this.workerGroups[i];
+            if (workerGroup.orderType == WorkerOrders.ORDER_WOOD //Wood workers are always allowed
+                || (workerGroup.orderType == WorkerOrders.ORDER_GOLDMINE && this.aiPlayer.workerTypes.goldMinerCanBuild)) { //Gold workers if allowed
+                retvar = workerGroup.findIdleWorker(this.aiPlayer.workerTypes.builder);
+            }
+        }
+
+        return retvar;
     }
 
     public clearWorker(worker: unit) {
         this.popIdleByUnit(worker);
         for (let i = 0; i < this.workerGroups.length; i++) {
             this.workerGroups[i].popByWorkerUnit(worker);
+        }
+    }
+
+    public moveWorkerToIdle(worker: unit) {
+        for (let i = 0; i < this.workerGroups.length; i++) {
+            let worker1 = this.workerGroups[i].popByWorkerUnit(worker);
+            if (worker1) {
+                this.idleIndexes.push(worker1);
+                return; //Early exit
+            }
         }
     }
 
