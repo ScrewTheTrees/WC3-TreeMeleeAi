@@ -4,7 +4,7 @@ import {AIPlayerStats} from "../AIPlayerStats";
 export class AIPlayerHolder {
     public stats: AIPlayerStats;
     constructor(public aiPlayer: player,
-                public workerTypes: WorkerConfig) {
+                public workerConfig: WorkerConfig) {
 
         this.stats = new AIPlayerStats(aiPlayer);
 

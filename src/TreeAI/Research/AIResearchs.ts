@@ -29,7 +29,6 @@ export class AIResearch {
         if (this.hasTicketReachedLevel(researchTicket)) return; //Already researched.
         if (this.buildings.countInResearch(researchTicket.researchId) > 0) return; //Busy researching already.
 
-        let numbers = GetResearchRegistry(InverseFourCC(researchTicket.researchId));
         let availableUnits: Building[] = [];
         for (let i = 0; i < researchTicket.researcherTypes.length; i++) {
             let type = researchTicket.researcherTypes[i];
@@ -37,8 +36,8 @@ export class AIResearch {
         }
         let building = availableUnits.pop();
         if (building) {
-            if (this.aiPlayer.stats.canAffordUnitVirtual(researchTicket.researchId))
-                IssueImmediateOrderById(building.building, researchTicket.researchId);
+            //if (this.aiPlayer.stats.canAffordUnitVirtual(researchTicket.researchId))
+            IssueImmediateOrderById(building.building, researchTicket.researchId);
         }
     }
 

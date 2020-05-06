@@ -104,7 +104,7 @@ export class AIWorkerHandler {
                     this.performWorkerOrder(value, WorkerOrders.ORDER_WOOD, group.town, hardReset);
                 }
                 if (group.orderType == WorkerOrders.ORDER_BUILD) {
-                    this.performWorkerOrder(value, this.aiPlayer.workerTypes.builderIdleOrder, group.town, false);
+                    this.performWorkerOrder(value, this.aiPlayer.workerConfig.builderIdleOrder, group.town, false);
                 }
             }
         }

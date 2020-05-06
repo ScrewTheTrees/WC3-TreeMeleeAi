@@ -56,11 +56,11 @@ export class AIWorkerGroups {
         for (let i = group.workers.length; i < group.amountOfWorkers; i++) {
             let worker: Worker | undefined;
             if (group.orderType == WorkerOrders.ORDER_GOLDMINE) {
-                worker = this.popIdleByUnitType(this.aiPlayer.workerTypes.goldMiner)
+                worker = this.popIdleByUnitType(this.aiPlayer.workerConfig.goldMiner)
             } else if (group.orderType == WorkerOrders.ORDER_WOOD) {
-                worker = this.popIdleByUnitType(this.aiPlayer.workerTypes.woodMiner)
+                worker = this.popIdleByUnitType(this.aiPlayer.workerConfig.woodMiner)
             } else if (group.orderType == WorkerOrders.ORDER_BUILD) {
-                worker = this.popIdleByUnitType(this.aiPlayer.workerTypes.builder)
+                worker = this.popIdleByUnitType(this.aiPlayer.workerConfig.builder)
             }
 
             if (worker != null) {
@@ -75,7 +75,7 @@ export class AIWorkerGroups {
         for (let i = 0; i < this.idleIndexes.length; i++) {
             let worker = this.idleIndexes[i];
             if (worker.orders == WorkerOrders.ORDER_WOOD  //Eglible to be constructors
-                || (worker.orders == WorkerOrders.ORDER_GOLDMINE && this.aiPlayer.workerTypes.goldMinerCanBuild)) {
+                || (worker.orders == WorkerOrders.ORDER_GOLDMINE && this.aiPlayer.workerConfig.goldMinerCanBuild)) {
                 if (retvar == undefined || Point.fromWidget(retvar.worker).distanceTo(town.place) < Point.fromWidget(worker.worker).distanceTo(town.place)) //Get closest one
                     retvar =  worker; //Idle workers best workers.
             }
@@ -86,8 +86,8 @@ export class AIWorkerGroups {
         for (let i = 0; i < this.workerGroups.length; i++) {
             let workerGroup = this.workerGroups[i];
             if (workerGroup.orderType == WorkerOrders.ORDER_WOOD //Wood workers are always allowed
-                || (workerGroup.orderType == WorkerOrders.ORDER_GOLDMINE && this.aiPlayer.workerTypes.goldMinerCanBuild)) { //Gold workers if allowed
-                retvar = workerGroup.findIdleWorker(this.aiPlayer.workerTypes.builder);
+                || (workerGroup.orderType == WorkerOrders.ORDER_GOLDMINE && this.aiPlayer.workerConfig.goldMinerCanBuild)) { //Gold workers if allowed
+                retvar = workerGroup.findIdleWorker(this.aiPlayer.workerConfig.builder);
             }
         }
 

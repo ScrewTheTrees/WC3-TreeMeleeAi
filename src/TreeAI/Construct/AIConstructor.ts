@@ -120,7 +120,7 @@ export class AIConstructor extends Entity {
                 ticket.town = ticket.town || this.townAllocator.getRandomTown();
                 let worker = ticket.worker;
                 let searchPoint = AITownBuildingLocation.getSearchPoint(ticket.town, ticket.priority);
-                let buildLoc = AITownBuildingLocation.getTownBuildingLocationByPoint(searchPoint, ticket.targetType, FourCC(this.aiPlayer.workerTypes.builder), ticket.size);
+                let buildLoc = AITownBuildingLocation.getTownBuildingLocationByPoint(searchPoint, ticket.targetType, FourCC(this.aiPlayer.workerConfig.builder), ticket.size);
                 this.workerGroups.moveWorkerToIdle(worker.worker);
                 ticket.targetLocation = buildLoc;
                 IssueBuildOrderById(worker.worker, ticket.targetType, buildLoc.x, buildLoc.y);
@@ -149,13 +149,13 @@ export class AIConstructor extends Entity {
     }
 
     private resolveWorkers() {
-        this.workerGroups.replaceWorkerOrder(WorkerOrders.ORDER_BUILD, this.aiPlayer.workerTypes.builderIdleOrder);
+        this.workerGroups.replaceWorkerOrder(WorkerOrders.ORDER_BUILD, this.aiPlayer.workerConfig.builderIdleOrder);
         this.constructionList.tickets.forEach((ticket) => {
             ticket.worker.orders = WorkerOrders.ORDER_BUILD;
-            if (!ticket.target && ticket.worker && !AITownBuildingLocation.isPointUnoccupied(ticket.targetLocation, ticket.size, ticket.targetType, FourCC(this.aiPlayer.workerTypes.builder))) {
+            if (!ticket.target && ticket.worker && !AITownBuildingLocation.isPointUnoccupied(ticket.targetLocation, ticket.size, ticket.targetType, FourCC(this.aiPlayer.workerConfig.builder))) {
                 let town: Town = this.townAllocator.getRandomTown();
                 if (ticket.town != null) town = ticket.town;
-                ticket.targetLocation = AITownBuildingLocation.getTownBuildingLocationByPoint(town.place, ticket.targetType, FourCC(this.aiPlayer.workerTypes.builder), ticket.size);
+                ticket.targetLocation = AITownBuildingLocation.getTownBuildingLocationByPoint(town.place, ticket.targetType, FourCC(this.aiPlayer.workerConfig.builder), ticket.size);
             }
         })
     }

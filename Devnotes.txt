@@ -25,11 +25,14 @@ Training:
     This system operates on another ticket priority ticket system, but unlike the vanilla system, this system treats units
     like a type of "stream". It will try to pump out units as it goes.
 
+Research:
+    Will try to research if it can in eglible buildings, currently does not contribute to the
+    virtualGold/wood due to insufficent natives.
 
 
 
 Problems:
     A current major problem is the checking of requirements, natives for this would be highly appreciated.
-
+    Natives for checking what a unit trains/upgrades/researches, so its easier to iterate.
 
     Need a way to check the Gold/Wood cost of research at levels.

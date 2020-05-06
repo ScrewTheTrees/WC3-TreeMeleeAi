@@ -49,9 +49,11 @@ switch (operation) {
                 try {
                     const tsLuaContents = fs.readFileSync(tsLua);
                     fs.appendFileSync(mapLua, "\nlocal mapVersion = {}");
-                    fs.appendFileSync(mapLua, "\nmapVersion[1] = " + version.major);
-                    fs.appendFileSync(mapLua, "\nmapVersion[2] = " + version.minor);
-                    fs.appendFileSync(mapLua, "\nmapVersion[3] = " + version.build);
+                    fs.appendFileSync(mapLua, "\nmapVersion.major = " + version.major);
+                    fs.appendFileSync(mapLua, "\nmapVersion.minor = " + version.minor);
+                    fs.appendFileSync(mapLua, "\nmapVersion.build = " + version.build);
+                    let date = new Date();
+                    fs.appendFileSync(mapLua, `\nmapVersion.date = "${date.getFullYear()}-${date.getMonth()}-${date.getDate()}  ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}"`);
                     fs.appendFileSync(mapLua, tsLuaContents);
                 } catch (err) {
                     return console.error(err);

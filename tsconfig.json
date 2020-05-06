@@ -19,7 +19,8 @@
       "lua-types/core/string",
       "lua-types/core/table",
       "lua-types/core/debug",
-      "lua-types/special/5.3"
+      "lua-types/special/5.3",
+      "lua-types/core/os"
     ]
   },
   "tstl": {

@@ -7,9 +7,16 @@ export class TreeLib {
         return this.libName + " " + this.version + " - " + this.creator;
     }
 
-    public static getMapVersion(): string[] {
+    public static getMapVersion(): MapVersion {
         // @ts-ignore
         if (mapVersion) return mapVersion; //Supplied by operation.js and build.json
-        else return [];
+        else return new MapVersion();
     }
+}
+
+export class MapVersion {
+    public major: string = "";
+    public minor: string = "";
+    public build: string = "";
+    public date: string = "";
 }
