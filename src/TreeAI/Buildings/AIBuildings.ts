@@ -6,10 +6,9 @@ import {Building} from "./Building";
 import {BuildingState} from "./BuildingState";
 import {AIPlayerHolder} from "../Races/AIPlayerHolder";
 import {Town} from "../Towns/Town";
-import {Ids} from "../Ids";
-import IsHallId = Ids.IsHallId;
 import {GetUpgradeRegistry} from "../Construct/UpgradeRegistry";
 import {GetTrainRegistry} from "../Training/TrainingRegistry";
+import {GetResearchRegistry} from "../Research/ResearchRegistry";
 
 export class AIBuildings {
     private static ids: AIBuildings[] = [];
@@ -175,6 +174,17 @@ export class AIBuildings {
         return count;
     }
 
+    public countInResearch(techType: number) {
+        let count = 0;
+        for (let i = 0; i < this.buildings.length; i++) {
+            let build = this.buildings[i];
+            if (build.status == BuildingState.RESEARCHING && build.targetType == InverseFourCC(techType)) {
+                count += 1;
+            }
+        }
+        return count;
+    }
+
     public getFinishedBuildingsOfType(buildingType: number) {
         let retBuild: Building[] = [];
         for (let i = 0; i < this.buildings.length; i++) {
@@ -224,6 +234,7 @@ export class AIBuildings {
     public getRegistry(id: string) {
         if (GetUpgradeRegistry(id).length > 0) return GetUpgradeRegistry(id);
         else if (GetTrainRegistry(id).length > 0) return GetTrainRegistry(id);
+        else if (GetResearchRegistry(id).length > 0) return GetResearchRegistry(id);
 
         return undefined;
     }

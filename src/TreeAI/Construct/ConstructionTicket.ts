@@ -27,6 +27,6 @@ export class ConstructionTicket {
     }
 
     isTimeExpired() {
-        return this.timeloop > 4;
+        return this.timeloop > 3;
     }
 }

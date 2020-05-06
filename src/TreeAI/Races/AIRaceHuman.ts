@@ -12,7 +12,9 @@ import {TrainingTicket} from "../Training/TrainingTicket";
 import {AIBuildings} from "../Buildings/AIBuildings";
 import {BaseUnits} from "../../TreeLib/GeneratedBase/BaseUnits";
 import {ConstructionPriority} from "../Construct/ConstructionPriority";
-import {TreeLib} from "../../TreeLib/TreeLib";
+import {BaseUpgrades} from "../../TreeLib/GeneratedBase/BaseUpgrades";
+import {AIResearch} from "../Research/AIResearchs";
+import {ResearchTicket} from "../Research/ResearchTicket";
 
 
 export class AIRaceHuman extends AIRaceAbstract {
@@ -25,6 +27,7 @@ export class AIRaceHuman extends AIRaceAbstract {
     private constructer: AIConstructor;
     private trainer: AITraining;
     private buildings: AIBuildings;
+    private researcher: AIResearch;
 
     constructor(aiPlayer: player) {
         super();
@@ -38,6 +41,7 @@ export class AIRaceHuman extends AIRaceAbstract {
         this.constructer = AIConstructor.getInstance(this.aiPlayer);
         this.trainer = AITraining.getInstance(this.aiPlayer);
         this.buildings = AIBuildings.getInstance(this.aiPlayer);
+        this.researcher = AIResearch.getInstance(this.aiPlayer);
 
         this.workerGroups.set(0, 5, WorkerOrders.ORDER_GOLDMINE, this.townAllocator.First());
 
@@ -45,13 +49,18 @@ export class AIRaceHuman extends AIRaceAbstract {
     }
 
     step(): void {
+        this.aiPlayer.stats.resetVirtualEconomy();
         this.constructer.resetQuery();
-        this.trainer.clearTickets();
+
+        this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.PEASANT), 11));
+        this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.MOUNTAINKING), 1));
+        this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.FOOTMAN), 4));
+        this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.RIFLEMAN), 4));
 
         if (!this.townAllocator.First().isHallAlive()) {
             this.constructer.constructBuilding(FourCC(BaseUnits.TOWNHALL), 1, this.townAllocator.First(), TownBuildingSizes.VERY_PRECISE, ConstructionPriority.CLOSE_TO_MINE);
         }
-        this.constructer.constructBuilding(FourCC(BaseUnits.FARM), math.floor((this.aiPlayer.stats.getCurrentFood() / 6) * 1.1), undefined, TownBuildingSizes.SPREAD);
+        this.constructer.constructBuilding(FourCC(BaseUnits.FARM), math.floor((this.aiPlayer.stats.getCurrentFood() / 6)), undefined, TownBuildingSizes.SPREAD);
         this.constructer.constructBuilding(FourCC(BaseUnits.ALTAROFKINGS), 1, this.townAllocator.First());
         this.constructer.constructBuilding(FourCC(BaseUnits.HUMANBARRACKS), 1, this.townAllocator.First());
 
@@ -67,6 +76,10 @@ export class AIRaceHuman extends AIRaceAbstract {
         }
 
         this.constructer.constructBuilding(FourCC(BaseUnits.ARCANEVAULT), 1, this.townAllocator.First(), undefined, ConstructionPriority.CLOSE_TO_MINE);
+        this.researcher.startResearch(new ResearchTicket(FourCC(BaseUpgrades.HUMAN_FOOTMAN_DEFEND), 1));
+        this.researcher.startResearch(new ResearchTicket(FourCC(BaseUpgrades.HUMAN_MELEE_ATTACK), 3));
+        this.researcher.startResearch(new ResearchTicket(FourCC(BaseUpgrades.HUMAN_RANGED_ATTACK), 3));
+
 
         if (!this.hasTier2Hall() && this.hasTier1Hall()) {
             this.constructer.upgradeBuilding(FourCC(BaseUnits.KEEP), 1, undefined);
@@ -76,11 +89,6 @@ export class AIRaceHuman extends AIRaceAbstract {
         }
 
         this.constructer.constructBuilding(FourCC(BaseUnits.HUMANBARRACKS), 2, this.townAllocator.First());
-
-        this.trainer.addTicket(new TrainingTicket(FourCC(BaseUnits.PEASANT), 13));
-        this.trainer.addTicket(new TrainingTicket(FourCC(BaseUnits.MOUNTAINKING), 1));
-        this.trainer.addTicket(new TrainingTicket(FourCC(BaseUnits.FOOTMAN), 4));
-        this.trainer.addTicket(new TrainingTicket(FourCC(BaseUnits.RIFLEMAN), 4));
 
     }
 

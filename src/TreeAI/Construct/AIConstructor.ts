@@ -16,13 +16,9 @@ import {GetUpgradeRegistry} from "./UpgradeRegistry";
 import {Building} from "../Buildings/Building";
 import {Logger} from "../../TreeLib/Logger";
 import {ConstructionPriority} from "./ConstructionPriority";
-import {Targeting} from "../Targeting";
-import GetClosestTreeToLocationInRange = Targeting.GetClosestTreeToLocationInRange;
-import {Point} from "../../TreeLib/Utility/Point";
 
 export class AIConstructor extends Entity {
     private static ids: AIConstructor[] = [];
-
 
     public static getInstance(aiPlayer: AIPlayerHolder): AIConstructor {
         if (this.ids[GetPlayerId(aiPlayer.aiPlayer)] == null) {
@@ -73,7 +69,6 @@ export class AIConstructor extends Entity {
     }
 
     public resetQuery() {
-        this.aiPlayer.stats.resetVirtualEconomy();
         this.removeInactiveTicketTargets();
     }
 

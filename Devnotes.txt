@@ -28,6 +28,8 @@ Training:
 
 
 
-Problems
+Problems:
     A current major problem is the checking of requirements, natives for this would be highly appreciated.
-    Otherwise catching of LUA exception might be a "must".
+
+
+    Need a way to check the Gold/Wood cost of research at levels.

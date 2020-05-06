@@ -10,8 +10,8 @@
     "compileTypescript": "tstl -p tsconfig.json",
     "compileAndRunMap": "node bin/operations build && node bin/operations run",
     "compileMap": "node bin/operations build",
-    "incrementMinorVersion": "npm run clean && npm run compileTypescript && node bin/operations incrementMinor",
-    "incrementMajorVersion": "npm run clean && npm run compileTypescript && node bin/operations incrementMajor"
+    "incrementMinorVersion": "npm run clean && npm run compileTypescript && node bin/operations incrementMinor && npm run compileMap",
+    "incrementMajorVersion": "npm run clean && npm run compileTypescript && node bin/operations incrementMajor && npm run compileMap"
   },
   "directories": {
     "lib": "lib"

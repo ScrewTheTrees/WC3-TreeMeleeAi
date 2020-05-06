@@ -1,5 +1,3 @@
-import {InverseFourCC} from "../TreeLib/Misc";
-
 export class AIPlayerStats {
     constructor(public aiPlayer: player) {
     }
