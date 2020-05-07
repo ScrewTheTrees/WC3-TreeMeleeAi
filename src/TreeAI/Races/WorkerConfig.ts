@@ -1,4 +1,4 @@
-import {WorkerOrders} from "./WorkerOrders";
+import {WorkerOrders} from "../Workers/WorkerOrders";
 
 export class WorkerConfig {
     constructor(public goldMiner: string,

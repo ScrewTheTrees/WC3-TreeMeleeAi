@@ -8,7 +8,7 @@ import {WorkerOrders} from "./WorkerOrders";
 import {AIWorkerAllocator} from "./AIWorkerAllocator";
 import {AIWorkerGroups} from "./AIWorkerGroups";
 import {AITownAllocator} from "../Towns/AITownAllocator";
-import {AIPlayerHolder} from "../Races/AIPlayerHolder";
+import {AIPlayerHolder} from "../Player/AIPlayerHolder";
 import {Delay} from "../../TreeLib/Utility/Delay";
 
 export class AIWorkerHandler {

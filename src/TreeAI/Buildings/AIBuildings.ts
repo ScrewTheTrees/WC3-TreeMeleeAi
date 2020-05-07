@@ -4,7 +4,7 @@ import {Quick} from "../../TreeLib/Quick";
 import {InverseFourCC, IsOfAnyType} from "../../TreeLib/Misc";
 import {Building} from "./Building";
 import {BuildingState} from "./BuildingState";
-import {AIPlayerHolder} from "../Races/AIPlayerHolder";
+import {AIPlayerHolder} from "../Player/AIPlayerHolder";
 import {Town} from "../Towns/Town";
 import {GetUpgradeRegistry} from "../Construct/UpgradeRegistry";
 import {GetTrainRegistry} from "../Training/TrainingRegistry";

@@ -1,4 +1,4 @@
-import {AIPlayerHolder} from "../Races/AIPlayerHolder";
+import {AIPlayerHolder} from "../Player/AIPlayerHolder";
 import {AIBuildings} from "../Buildings/AIBuildings";
 import {TrainingTicket} from "./TrainingTicket";
 import {GetAliveUnitsOfTypeByPlayer} from "../../TreeLib/Misc";
@@ -48,18 +48,17 @@ export class AITraining {
         }
 
         for (let i = 0; i < amountDifference; i++) {
-            if (this.aiPlayer.stats.canAffordUnit(trainingTicket.targetType)
-                && this.aiPlayer.stats.hasFoodForUnit(trainingTicket.targetType)) {
-                xpcall(() => {
-                    let trainer = availableUnits.pop();
-                    if (trainer != null) {
-                        let result = IssueImmediateOrderById(trainer.building, trainingTicket.targetType);
-                        if (result) this.aiPlayer.stats.reduceVirtualByUnit(trainingTicket.targetType);
-                    }
-                }, Logger.warning);
-            } else {
-                break;
+            if (!this.aiPlayer.battleConfig.goPast50Food && this.aiPlayer.stats.getCurrentFood() + GetFoodUsed(trainingTicket.targetType) > 50) break;
+            if (!this.aiPlayer.battleConfig.goPast80Food && this.aiPlayer.stats.getCurrentFood() + GetFoodUsed(trainingTicket.targetType) > 80) break;
+            if (!this.aiPlayer.stats.canAffordUnit(trainingTicket.targetType)) break;
+            if (!this.aiPlayer.stats.hasFoodForUnit(trainingTicket.targetType)) break;
+
+            let trainer = availableUnits.pop();
+            if (trainer != null) {
+                let result = IssueImmediateOrderById(trainer.building, trainingTicket.targetType);
+                if (result) this.aiPlayer.stats.reduceVirtualByUnit(trainingTicket.targetType);
             }
+
         }
     }
 }

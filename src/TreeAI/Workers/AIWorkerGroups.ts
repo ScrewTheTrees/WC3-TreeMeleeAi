@@ -4,7 +4,7 @@ import {Quick} from "../../TreeLib/Quick";
 import {AITownAllocator} from "../Towns/AITownAllocator";
 import {WorkerGroup} from "./WorkerGroup";
 import {WorkerOrders} from "./WorkerOrders";
-import {AIPlayerHolder} from "../Races/AIPlayerHolder";
+import {AIPlayerHolder} from "../Player/AIPlayerHolder";
 import {Point} from "../../TreeLib/Utility/Point";
 
 export class AIWorkerGroups {

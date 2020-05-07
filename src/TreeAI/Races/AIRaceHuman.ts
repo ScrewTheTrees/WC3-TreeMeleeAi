@@ -1,10 +1,10 @@
 import {AIRaceAbstract} from "./AIRaceAbstract";
-import {WorkerConfig} from "../Workers/WorkerConfig";
+import {WorkerConfig} from "./WorkerConfig";
 import {WorkerOrders} from "../Workers/WorkerOrders";
 import {AITownAllocator} from "../Towns/AITownAllocator";
 import {AIWorkerHandler} from "../Workers/AIWorkerHandler";
 import {AIWorkerGroups} from "../Workers/AIWorkerGroups";
-import {AIPlayerHolder} from "./AIPlayerHolder";
+import {AIPlayerHolder} from "../Player/AIPlayerHolder";
 import {AIConstructor} from "../Construct/AIConstructor";
 import {TownBuildingSizes} from "../Towns/TownBuildingSizes";
 import {AITraining} from "../Training/AITraining";
@@ -16,12 +16,12 @@ import {BaseUpgrades} from "../../TreeLib/GeneratedBase/BaseUpgrades";
 import {AIResearch} from "../Research/AIResearchs";
 import {ResearchTicket} from "../Research/ResearchTicket";
 import {AIArmy} from "../Army/AIArmy";
+import {ArmyConfig} from "./ArmyConfig";
 
 
 export class AIRaceHuman extends AIRaceAbstract {
     private aiPlayer: AIPlayerHolder;
 
-    private workerTypes: WorkerConfig;
     private moduleWorker: AIWorkerHandler;
     private workerGroups: AIWorkerGroups;
     private townAllocator: AITownAllocator;
@@ -33,9 +33,10 @@ export class AIRaceHuman extends AIRaceAbstract {
 
     constructor(aiPlayer: player) {
         super();
-        this.workerTypes = new WorkerConfig("hpea", "hpea", "hpea", WorkerOrders.ORDER_WOOD);
+        let workerTypes = new WorkerConfig(BaseUnits.PEASANT, BaseUnits.PEASANT, BaseUnits.PEASANT, WorkerOrders.ORDER_WOOD);
+        let battleConfig = new ArmyConfig([BaseUnits.MOUNTAINKING, BaseUnits.ARCHMAGE, BaseUnits.PALADIN]);
 
-        this.aiPlayer = new AIPlayerHolder(aiPlayer, this.workerTypes);
+        this.aiPlayer = new AIPlayerHolder(aiPlayer, workerTypes, battleConfig);
 
         this.moduleWorker = AIWorkerHandler.getInstance(this.aiPlayer);
         this.workerGroups = AIWorkerGroups.getInstance(this.aiPlayer);
@@ -55,9 +56,11 @@ export class AIRaceHuman extends AIRaceAbstract {
         this.aiPlayer.stats.resetVirtualEconomy();
         this.constructer.resetQuery();
 
-        this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.PEASANT), 11));
-        this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.MOUNTAINKING), 1));
-        this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.FOOTMAN), 4));
+        this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.PEASANT), 12));
+
+        if (this.aiPlayer.battleConfig.heroes[0]) this.trainer.trainUnit(new TrainingTicket(FourCC(this.aiPlayer.battleConfig.heroes[0]), 1));
+
+        if (!this.hasTier2HallFinished()) this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.FOOTMAN), 4));
         this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.RIFLEMAN), 4));
 
         if (!this.townAllocator.First().isHallAlive()) {
@@ -83,12 +86,13 @@ export class AIRaceHuman extends AIRaceAbstract {
             this.constructer.upgradeBuilding(FourCC(BaseUnits.KEEP), 1, undefined);
         }
 
-
-        this.constructer.constructBuilding(FourCC(BaseUnits.HUMANBARRACKS), 2, this.townAllocator.First());
-
-
         if (this.hasTier2HallFinished()) {
-            this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.SPELLBREAKER), 4));
+            this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.PEASANT), 14));
+            if (this.aiPlayer.battleConfig.heroes[1]) this.trainer.trainUnit(new TrainingTicket(FourCC(this.aiPlayer.battleConfig.heroes[1]), 1));
+            this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.SPELLBREAKER), 2));
+            this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.PRIEST), 2));
+            this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.SORCERESS), 2));
+            this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.RIFLEMAN), 12));
 
             this.constructer.constructBuilding(FourCC(BaseUnits.ARCANESANCTUM), 2, undefined, undefined, ConstructionPriority.CLOSE_TO_MINE);
 
@@ -114,13 +118,19 @@ export class AIRaceHuman extends AIRaceAbstract {
             || this.buildings.getAllBuildingsOfType(FourCC("hcas")).length > 0);
     }
 
-    public hasTier2HallFinished() {
-        return (this.buildings.getFinishedBuildingsOfType(FourCC("hkee")).length > 0
-            || this.buildings.getFinishedBuildingsOfType(FourCC("hcas")).length > 0);
+    public hasTier1HallFinished() {
+        return (this.buildings.getFinishedBuildingsOfType(FourCC("htow")).length > 0
+            || this.buildings.getAllBuildingsOfType(FourCC("hkee")).length > 0
+            || this.buildings.getAllBuildingsOfType(FourCC("hcas")).length > 0);
     }
 
     public hasTier2Hall() {
         return (this.buildings.getAllBuildingsOfType(FourCC("hkee")).length > 0
+            || this.buildings.getAllBuildingsOfType(FourCC("hcas")).length > 0);
+    }
+
+    public hasTier2HallFinished() {
+        return (this.buildings.getFinishedBuildingsOfType(FourCC("hkee")).length > 0
             || this.buildings.getAllBuildingsOfType(FourCC("hcas")).length > 0);
     }
 

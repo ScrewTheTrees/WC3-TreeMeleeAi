@@ -1,5 +1,5 @@
 import {AITownAllocator} from "../Towns/AITownAllocator";
-import {AIPlayerHolder} from "../Races/AIPlayerHolder";
+import {AIPlayerHolder} from "../Player/AIPlayerHolder";
 import {AIBuildings} from "../Buildings/AIBuildings";
 import {ResearchTicket} from "./ResearchTicket";
 import {GetResearchRegistry, ResearchRegistry} from "./ResearchRegistry";

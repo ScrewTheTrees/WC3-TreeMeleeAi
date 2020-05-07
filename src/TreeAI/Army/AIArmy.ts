@@ -1,9 +1,10 @@
-import {AIPlayerHolder} from "../Races/AIPlayerHolder";
+import {AIPlayerHolder} from "../Player/AIPlayerHolder";
 import {Soldier} from "./Soldier";
 import {InverseFourCC} from "../../TreeLib/Misc";
 import {Platoon} from "./Platoon";
+import {Entity} from "../../TreeLib/Entity";
 
-export class AIArmy {
+export class AIArmy extends Entity {
     private static ids: AIArmy[] = [];
 
     public static getInstance(aiPlayer: AIPlayerHolder): AIArmy {
@@ -17,8 +18,17 @@ export class AIArmy {
     private allPlatoons: Platoon[] = [];
 
     constructor(public aiPlayer: AIPlayerHolder) {
+        super();
+        this._timerDelay = 1;
         TriggerRegisterPlayerUnitEvent(this.onUnitTrain, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_TRAIN_FINISH, null);
         TriggerAddAction(this.onUnitTrain, () => this.onUnitTrainAction());
+    }
+
+    step() {
+        for (let i = 0; i < this.allPlatoons.length; i++) {
+            let platoon = this.allPlatoons[i];
+            platoon.purge();
+        }
     }
 
     private onUnitTrainAction() {
@@ -43,7 +53,8 @@ export class AIArmy {
         }
         let newPlatoon = new Platoon();
         newPlatoon.addSoldier(soldier);
-        this.allPlatoons.push(newPlatoon);
+        let n = this.allPlatoons.push(newPlatoon);
+        print("Make new platoon:" + n)
     }
 
     public reformPlatoons() {

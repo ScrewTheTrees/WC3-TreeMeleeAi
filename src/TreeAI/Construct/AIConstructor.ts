@@ -1,4 +1,4 @@
-import {AIPlayerHolder} from "../Races/AIPlayerHolder";
+import {AIPlayerHolder} from "../Player/AIPlayerHolder";
 import {ConstructionList} from "./ConstructionList";
 import {Town} from "../Towns/Town";
 import {TownBuildingSizes} from "../Towns/TownBuildingSizes";
@@ -126,7 +126,11 @@ export class AIConstructor extends Entity {
                 IssueBuildOrderById(worker.worker, ticket.targetType, buildLoc.x, buildLoc.y);
                 this.updateAllTickets();
             } else {
-                IssueTargetOrder(ticket.worker.worker, "repair", ticket.target);
+                if (this.aiPlayer.workerConfig.isUndeadBuilder) {
+                    this.removeTicket(ticket); //Undeads dont need to stay by the building.
+                } else {
+                    IssueTargetOrder(ticket.worker.worker, "repair", ticket.target);
+                }
             }
         }, Logger.critical);
     }

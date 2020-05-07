@@ -4,7 +4,7 @@ import {GetUnitsOfTypesAroundPointInRange, InverseFourCC} from "../../TreeLib/Mi
 import {Targeting} from "../Targeting";
 import {Town} from "./Town";
 import {DistValue} from "../DistValue";
-import {AIPlayerHolder} from "../Races/AIPlayerHolder";
+import {AIPlayerHolder} from "../Player/AIPlayerHolder";
 
 export class AITownAllocator {
     private static ids: AITownAllocator[] = [];

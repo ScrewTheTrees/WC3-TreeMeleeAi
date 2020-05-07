@@ -2,7 +2,7 @@ import {Targeting} from "../Targeting";
 import {Ids} from "../Ids";
 import {Worker} from "./Worker";
 import {Quick} from "../../TreeLib/Quick";
-import {AIPlayerHolder} from "../Races/AIPlayerHolder";
+import {AIPlayerHolder} from "../Player/AIPlayerHolder";
 
 export class AIWorkerAllocator {
     private static ids: AIWorkerAllocator[] = [];
