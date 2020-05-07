@@ -78,6 +78,7 @@ export class AIConstructor extends Entity {
     ) {
         if (!town) town = this.townAllocator.getRandomTown();
         if (this.constructionList.listNoTarget().length == 0 && this.resolveUnitsInConstruction(buildingType) < amount) {
+        //if (this.resolveUnitsInConstruction(buildingType) < amount) {
             this.updateAllTickets();
             let worker = this.workerGroups.getIdleConstructor(town);
             if (worker) {
@@ -128,9 +129,9 @@ export class AIConstructor extends Entity {
             } else {
                 if (this.aiPlayer.workerConfig.isUndeadBuilder) {
                     this.removeTicket(ticket); //Undeads dont need to stay by the building.
-                } else {
-                    IssueTargetOrder(ticket.worker.worker, "repair", ticket.target);
+                    return;
                 }
+                IssueTargetOrder(ticket.worker.worker, "repair", ticket.target);
             }
         }, Logger.critical);
     }

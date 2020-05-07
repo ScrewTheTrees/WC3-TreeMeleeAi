@@ -32,7 +32,7 @@ export class AITownBuildingLocation {
             return new Point(startX, startY); //Early exit
         }
 
-        for (let i = 0; i < 100; i += 1) {
+        for (let i = 0; i < 500; i += 1) {
             if (this.isLocUnoccupied(startX + x, startY - range, size, unitType, builderType)) {
                 return new Point(startX + x, startY - range)
             }

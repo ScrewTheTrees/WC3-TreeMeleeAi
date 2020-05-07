@@ -54,7 +54,7 @@ export class AIArmy extends Entity {
         let newPlatoon = new Platoon();
         newPlatoon.addSoldier(soldier);
         let n = this.allPlatoons.push(newPlatoon);
-        print("Make new platoon:" + n)
+        print("Make new platoon:" + (n - 1))
     }
 
     public reformPlatoons() {
