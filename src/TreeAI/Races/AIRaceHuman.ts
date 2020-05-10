@@ -57,6 +57,12 @@ export class AIRaceHuman extends AIRaceAbstract {
     }
 
     step(): void {
+        this.handleBuildOrders();
+        this.handleAttackOrders();
+    }
+
+
+    private handleBuildOrders() {
         this.aiPlayer.stats.resetVirtualEconomy();
         this.constructer.resetQuery();
 
@@ -118,8 +124,17 @@ export class AIRaceHuman extends AIRaceAbstract {
         this.researcher.startResearch(new ResearchTicket(FourCC(BaseUpgrades.HUMAN_PRIEST_TRAINING), 3));
         this.researcher.startResearch(new ResearchTicket(FourCC(BaseUpgrades.HUMAN_SORCERESS_TRAINING), 3));
         this.researcher.startResearch(new ResearchTicket(FourCC(BaseUpgrades.HUMAN_MAGICAL_SENTINAL), 1));
+    }
+
+    private handleAttackOrders() {
 
     }
+
+
+
+
+
+
 
 
     public hasTier1Hall() {
@@ -151,5 +166,4 @@ export class AIRaceHuman extends AIRaceAbstract {
     public hasTier3HallFinished() {
         return (this.buildings.getFinishedBuildingsOfType(FourCC("hcas")).length > 0)
     }
-
 }

@@ -39,7 +39,6 @@ export class AIArmy extends Entity {
             return; //We dont need no worker.
         let soldier = new Soldier(unit);
         this.addSoldierToPlatoons(soldier);
-        print(InverseFourCC(GetUnitTypeId(soldier.soldier)));
     }
 
     public addSoldierToPlatoons(soldier: Soldier) {
@@ -47,14 +46,14 @@ export class AIArmy extends Entity {
             let platoon = this.allPlatoons[i];
             if (!platoon.isSatisfied()) {
                 platoon.addSoldier(soldier);
-                print("add to platoon:" + i)
+                print("add to platoon:", i, InverseFourCC(GetUnitTypeId(soldier.soldier)));
                 return;
             }
         }
         let newPlatoon = new Platoon();
         newPlatoon.addSoldier(soldier);
         let n = this.allPlatoons.push(newPlatoon);
-        print("Make new platoon:" + (n - 1))
+        print("Make new platoon:", (n - 1), InverseFourCC(GetUnitTypeId(soldier.soldier)));
     }
 
     public reformPlatoons() {

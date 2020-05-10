@@ -29,6 +29,9 @@ Research:
     Will try to research if it can in eglible buildings, currently does not contribute to the
     virtualGold/wood due to insufficent natives.
 
+CreepCamps:
+    Will build a registry of all creep camps on the map. And track their status.
+    Also handles fetching the most eglible creep camps between levels from a location.
 
 
 Problems:
