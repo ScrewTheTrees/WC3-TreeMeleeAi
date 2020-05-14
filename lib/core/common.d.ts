@@ -332,7 +332,7 @@ declare function GroupEnumUnitsInRange(whichGroup: group, x: number, y: number, 
 declare function GroupEnumUnitsInRangeOfLoc(whichGroup: group, whichLocation: location, radius: number, filter: boolexpr): void
 declare function GroupEnumUnitsInRangeCounted(whichGroup: group, x: number, y: number, radius: number, filter: boolexpr, countLimit: number): void
 declare function GroupEnumUnitsInRangeOfLocCounted(whichGroup: group, whichLocation: location, radius: number, filter: boolexpr, countLimit: number): void
-declare function GroupEnumUnitsSelected(whichGroup: group, whichPlayer: player, filter: boolexpr): void
+declare function GroupEnumUnitsSelected(whichGroup: group, whichPlayer: player, filter: boolexpr | null): void
 declare function GroupImmediateOrder(whichGroup: group, order: string): boolean
 declare function GroupImmediateOrderById(whichGroup: group, order: number): boolean
 declare function GroupPointOrder(whichGroup: group, order: string, x: number, y: number): boolean

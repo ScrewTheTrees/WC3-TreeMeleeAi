@@ -17,6 +17,10 @@ export class Point {
         return math.sqrt(((this.x - target.x) * (this.x - target.x)) + ((this.y - target.y) * (this.y - target.y)));
     }
 
+    public distanceToSquared(target: Point): number {
+        return ((this.x - target.x) * (this.x - target.x)) + ((this.y - target.y) * (this.y - target.y));
+    }
+
     public directionTo(target: Point) {
         let radians = math.atan(target.y - this.y, target.x - this.x);
         return (radians * 180 / Math.PI);

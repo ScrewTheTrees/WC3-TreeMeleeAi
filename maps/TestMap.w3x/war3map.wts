@@ -1,99 +1,54 @@
-﻿STRING 0
+﻿STRING 1
 {
-Divide and Conquer
-}
-
-STRING 1
-{
-3v3v3v3 or 6v6
+Silverpine Forest
 }
 
 STRING 2
 {
-Trolls and Golems control this beautiful forest. Expand quickly, and stain the river with the blood of your enemies.
+1v1 - 3v3 or FFA
 }
 
 STRING 3
 {
+Conveniently close by, mercenary Heroes are available for hire. Among these rich resources and forested hills, you could team up with allies or strike out on your own.
+}
+
+STRING 4
+{
 Blizzard Entertainment
 }
 
-STRING 7
-{
-
-}
-
-STRING 8
-{
-
-}
-
-STRING 9
-{
-
-}
-
-STRING 10
+STRING 5
 {
 Player 1
 }
 
-STRING 11
+STRING 6
 {
 Player 2
 }
 
-STRING 12
+STRING 7
 {
 Player 3
 }
 
-STRING 13
+STRING 8
 {
 Player 4
 }
 
-STRING 14
+STRING 9
 {
 Player 5
 }
 
-STRING 15
+STRING 10
 {
 Player 6
 }
 
-STRING 16
-{
-Player 7
-}
-
-STRING 17
-{
-Player 8
-}
-
-STRING 18
-{
-Player 9
-}
-
-STRING 19
-{
-Player 10
-}
-
-STRING 20
-{
-Player 11
-}
-
-STRING 21
-{
-Player 12
-}
-
-STRING 22
+STRING 11
 {
 Force 1
 }

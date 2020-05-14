@@ -1,99 +1,54 @@
-STRING 0
-{
-분할 통치
-}
-
 STRING 1
 {
-3대3대3대3, 6v6
+은빛소나무 숲
 }
 
 STRING 2
 {
-트롤과 골렘이 군림하는 아름다운 숲입니다. 신속히 세를 넓혀 적의 피로 강을 물들여야 합니다.
+1대1 - 3대3, 개별 전투
 }
 
 STRING 3
 {
+인근에 용병 영웅이 있어 편리하게 고용할 수 있습니다. 풍부한 자원과 무성한 언덕을 무대로 동맹을 형성하든 단독으로 공격하든 그건 본인의 판단에 달려있습니다.
+}
+
+STRING 4
+{
 블리자드 엔터테인먼트
 }
 
-STRING 7
-{
-
-}
-
-STRING 8
-{
-
-}
-
-STRING 9
-{
-
-}
-
-STRING 10
+STRING 5
 {
 플레이어 1
 }
 
-STRING 11
+STRING 6
 {
 플레이어 2
 }
 
-STRING 12
+STRING 7
 {
 플레이어 3
 }
 
-STRING 13
+STRING 8
 {
 플레이어 4
 }
 
-STRING 14
+STRING 9
 {
 플레이어 5
 }
 
-STRING 15
+STRING 10
 {
 플레이어 6
 }
 
-STRING 16
-{
-플레이어 7
-}
-
-STRING 17
-{
-플레이어 8
-}
-
-STRING 18
-{
-플레이어 9
-}
-
-STRING 19
-{
-플레이어 10
-}
-
-STRING 20
-{
-플레이어 11
-}
-
-STRING 21
-{
-플레이어 12
-}
-
-STRING 22
+STRING 11
 {
 병력 1
 }

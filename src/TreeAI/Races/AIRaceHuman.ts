@@ -18,10 +18,11 @@ import {ResearchTicket} from "../Research/ResearchTicket";
 import {AIArmy} from "../Army/AIArmy";
 import {ArmyConfig} from "./ArmyConfig";
 import {AICreepCamps} from "../CreepCamps/AICreepCamps";
+import {CreepArmyGoal} from "../Army/ArmyGoals/CreepArmyGoal";
 
 
 export class AIRaceHuman extends AIRaceAbstract {
-    private aiPlayer: AIPlayerHolder;
+    public aiPlayer: AIPlayerHolder;
 
     private moduleWorker: AIWorkerHandler;
     private workerGroups: AIWorkerGroups;
@@ -127,14 +128,16 @@ export class AIRaceHuman extends AIRaceAbstract {
     }
 
     private handleAttackOrders() {
+        let armyPosition = this.army.getCenterOfArmy();
 
+        if (this.army.isGoalFinished()) {
+            if (this.army.getArmySize() >= 4) {
+                let closestCamp = this.creepCamps.getClosestCamp(armyPosition.centerPoint.getBetween(this.townAllocator.First().place), 1, this.army.getLevel());
+                if (closestCamp) this.army.setGoal(new CreepArmyGoal(closestCamp));
+                else print("No camp found.");
+            }
+        }
     }
-
-
-
-
-
-
 
 
     public hasTier1Hall() {

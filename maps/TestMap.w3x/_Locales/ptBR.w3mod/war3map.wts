@@ -1,85 +1,55 @@
 
-STRING 0
+STRING 1
 {
-Dividir e Conquistar
+Floresta de Pinhaprata
 }
 
-STRING 3
+STRING 4
 {
 Blizzard Entertainment
 }
 
-STRING 10
+STRING 5
 {
 Jogador 1
 }
 
-STRING 11
+STRING 6
 {
 Jogador 2
 }
 
-STRING 12
+STRING 7
 {
 Jogador 3
 }
 
-STRING 13
+STRING 8
 {
 Jogador 4
 }
 
-STRING 14
+STRING 9
 {
 Jogador 5
 }
 
-STRING 15
+STRING 10
 {
 Jogador 6
 }
 
-STRING 16
-{
-Jogador 7
-}
-
-STRING 17
-{
-Jogador 8
-}
-
-STRING 18
-{
-Jogador 9
-}
-
-STRING 19
-{
-Jogador 10
-}
-
-STRING 20
-{
-Jogador 11
-}
-
-STRING 21
-{
-Jogador 12
-}
-
-STRING 22
+STRING 11
 {
 Tropa 1
 }
 
-STRING 1
-{
-3x3x3x3 ou 6x6
-}
-
 STRING 2
 {
-Trolls e golens controlam esta bela floresta. Expanda rapidamente e manche o rio com o sangue de seus inimigos.
+1x1 - 3x3 ou TCT
+}
+
+STRING 3
+{
+Convenientemente, heróis mercenários podem ser contratados nas proximidades. Com os ricos recursos e colinas arborizadas, você pode se unir a aliados ou atacar sozinho.
 }

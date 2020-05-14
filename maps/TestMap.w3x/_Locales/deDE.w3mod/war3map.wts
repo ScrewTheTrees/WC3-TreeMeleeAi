@@ -1,99 +1,54 @@
-STRING 0
+ï»¿STRING 1
 {
-Teilen und herrschen
-}
-
-STRING 1
-{
-3v3v3v3 oder 6v6
+Silberwald
 }
 
 STRING 2
 {
-Trolle und Golems kontrollieren diesen wunderschönen Wald. Schnelles Expandieren ist angeraten, um den Fluss mit dem Blut der Gegner rot zu färben.
+1v1–3v3 oder FFA
 }
 
 STRING 3
 {
+Günstigerweise können ganz in der Nähe Söldnerhelden angeheuert werden. Inmitten all dieser reichen Rohstoffe und bewaldeten Hügel kann man sich mit Verbündeten zusammenschließen – oder auch allein kämpfen.
+}
+
+STRING 4
+{
 Blizzard Entertainment
 }
 
-STRING 7
-{
-
-}
-
-STRING 8
-{
-
-}
-
-STRING 9
-{
-
-}
-
-STRING 10
+STRING 5
 {
 Spieler 1
 }
 
-STRING 11
+STRING 6
 {
 Spieler 2
 }
 
-STRING 12
+STRING 7
 {
 Spieler 3
 }
 
-STRING 13
+STRING 8
 {
 Spieler 4
 }
 
-STRING 14
+STRING 9
 {
 Spieler 5
 }
 
-STRING 15
+STRING 10
 {
 Spieler 6
 }
 
-STRING 16
-{
-Spieler 7
-}
-
-STRING 17
-{
-Spieler 8
-}
-
-STRING 18
-{
-Spieler 9
-}
-
-STRING 19
-{
-Spieler 10
-}
-
-STRING 20
-{
-Spieler 11
-}
-
-STRING 21
-{
-Spieler 12
-}
-
-STRING 22
+STRING 11
 {
 Streitmacht 1
 }

@@ -16,6 +16,7 @@ import {GetUpgradeRegistry} from "./UpgradeRegistry";
 import {Building} from "../Buildings/Building";
 import {Logger} from "../../TreeLib/Logger";
 import {ConstructionPriority} from "./ConstructionPriority";
+import {Point} from "../../TreeLib/Utility/Point";
 
 export class AIConstructor extends Entity {
     private static ids: AIConstructor[] = [];
@@ -60,11 +61,7 @@ export class AIConstructor extends Entity {
         this.updateAllTickets();
         for (let i = 0; i < this.constructionList.tickets.length; i++) {
             let ticket = this.constructionList.tickets[i];
-            ticket.timeloop += this._timerDelay;
-            if (ticket.isTimeExpired()) {
-                this.updateConstructionTicket(ticket);
-                ticket.timeloop = 0;
-            }
+            this.updateConstructionTicket(ticket);
         }
     }
 
@@ -78,7 +75,7 @@ export class AIConstructor extends Entity {
     ) {
         if (!town) town = this.townAllocator.getRandomTown();
         if (this.constructionList.listNoTarget().length == 0 && this.resolveUnitsInConstruction(buildingType) < amount) {
-        //if (this.resolveUnitsInConstruction(buildingType) < amount) {
+            //if (this.resolveUnitsInConstruction(buildingType) < amount) {
             this.updateAllTickets();
             let worker = this.workerGroups.getIdleConstructor(town);
             if (worker) {
@@ -120,11 +117,15 @@ export class AIConstructor extends Entity {
             if (!ticket.target) {
                 ticket.town = ticket.town || this.townAllocator.getRandomTown();
                 let worker = ticket.worker;
-                let searchPoint = AITownBuildingLocation.getSearchPoint(ticket.town, ticket.priority);
-                let buildLoc = AITownBuildingLocation.getTownBuildingLocationByPoint(searchPoint, ticket.targetType, FourCC(this.aiPlayer.workerConfig.builder), ticket.size);
-                this.workerGroups.moveWorkerToIdle(worker.worker);
-                ticket.targetLocation = buildLoc;
-                IssueBuildOrderById(worker.worker, ticket.targetType, buildLoc.x, buildLoc.y);
+
+                if (GetUnitCurrentOrder(ticket.worker.worker) != ticket.targetType) {
+                    let searchPoint = AITownBuildingLocation.getSearchPoint(ticket.town, ticket.priority);
+                    let buildLoc = AITownBuildingLocation.getTownBuildingLocationByPoint(searchPoint, ticket.targetType, FourCC(this.aiPlayer.workerConfig.builder), ticket.size);
+                    this.workerGroups.moveWorkerToIdle(worker.worker);
+                    ticket.targetLocation = buildLoc;
+                    IssueBuildOrderById(worker.worker, ticket.targetType, buildLoc.x, buildLoc.y);
+                }
+
                 this.updateAllTickets();
             } else {
                 if (this.aiPlayer.workerConfig.isUndeadBuilder) {

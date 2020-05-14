@@ -1,99 +1,54 @@
-ď»żSTRING 0
+ď»żSTRING 1
 {
-Dziel i rządź
-}
-
-STRING 1
-{
-3na3na3na3 lub 6na6
+Srebrzysty Bór
 }
 
 STRING 2
 {
-Ten piękny las jest opanowany przez trolle i golemy. Szybko rozbuduj swe wojska i wytocz ze swoich wrogów rzekę krwi.
+1na1, 3na3 lub KnK
 }
 
 STRING 3
 {
+W pobliżu bohaterowie oferują swe usługi, a bogate w surowce i zalesione wzgórza umożliwiają ci zarówno samotny atak na wroga, jak i poszukiwanie sojuszników.
+}
+
+STRING 4
+{
 Blizzard Entertainment
 }
 
-STRING 7
-{
-
-}
-
-STRING 8
-{
-
-}
-
-STRING 9
-{
-
-}
-
-STRING 10
+STRING 5
 {
 Gracz 1
 }
 
-STRING 11
+STRING 6
 {
 Gracz 2
 }
 
-STRING 12
+STRING 7
 {
 Gracz 3
 }
 
-STRING 13
+STRING 8
 {
 Gracz 4
 }
 
-STRING 14
+STRING 9
 {
 Gracz 5
 }
 
-STRING 15
+STRING 10
 {
 Gracz 6
 }
 
-STRING 16
-{
-Gracz 7
-}
-
-STRING 17
-{
-Gracz 8
-}
-
-STRING 18
-{
-Gracz 9
-}
-
-STRING 19
-{
-Gracz 10
-}
-
-STRING 20
-{
-Gracz 11
-}
-
-STRING 21
-{
-Gracz 12
-}
-
-STRING 22
+STRING 11
 {
 Armia 1
 }

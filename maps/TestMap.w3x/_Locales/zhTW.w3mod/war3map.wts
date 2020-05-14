@@ -1,99 +1,54 @@
-STRING 0
-{
-分裂與征服
-}
-
 STRING 1
 {
-3對3對3對3、6對6
+銀松森林
 }
 
 STRING 2
 {
-食人妖與魔像控制了這座美麗的森林。快速擴張，並用敵人的血染紅這條河。
+1對1 - 3對3、自由對戰
 }
 
 STRING 3
 {
+傭兵英雄就在附近，隨時等你雇用。在這片資源豐富的森林山丘中，你可以與盟友組隊，或自己打出一片天。
+}
+
+STRING 4
+{
 暴雪娛樂
 }
 
-STRING 7
-{
-
-}
-
-STRING 8
-{
-
-}
-
-STRING 9
-{
-
-}
-
-STRING 10
+STRING 5
 {
 玩家1
 }
 
-STRING 11
+STRING 6
 {
 玩家2
 }
 
-STRING 12
+STRING 7
 {
 玩家3
 }
 
-STRING 13
+STRING 8
 {
 玩家4
 }
 
-STRING 14
+STRING 9
 {
 玩家5
 }
 
-STRING 15
+STRING 10
 {
 玩家6
 }
 
-STRING 16
-{
-玩家7
-}
-
-STRING 17
-{
-玩家8
-}
-
-STRING 18
-{
-玩家9
-}
-
-STRING 19
-{
-玩家10
-}
-
-STRING 20
-{
-玩家11
-}
-
-STRING 21
-{
-玩家12
-}
-
-STRING 22
+STRING 11
 {
 勢力1
 }

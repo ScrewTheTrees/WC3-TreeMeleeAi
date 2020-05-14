@@ -1,99 +1,54 @@
-ï»¿STRING 0
+ï»¿STRING 1
 {
-Divide y vencerás
-}
-
-STRING 1
-{
-3c3c3 o 6c6
+Bosque de Argénteos
 }
 
 STRING 2
 {
-Trols y gólems controlan este precioso bosque. Expándete rápido y tiñe el río con la sangre de tus enemigos.
+1c1 - 3c3 o TcT
 }
 
 STRING 3
 {
+Los héroes mercenarios están a una distancia muy conveniente y disponibles para ser contratados. Entre estos ricos recursos y colinas con bosques, podrías formar un equipo con algunos aliados o emprender el camino por tu cuenta.
+}
+
+STRING 4
+{
 Blizzard Entertainment
 }
 
-STRING 7
-{
-
-}
-
-STRING 8
-{
-
-}
-
-STRING 9
-{
-
-}
-
-STRING 10
+STRING 5
 {
 Jugador 1
 }
 
-STRING 11
+STRING 6
 {
 Jugador 2
 }
 
-STRING 12
+STRING 7
 {
 Jugador 3
 }
 
-STRING 13
+STRING 8
 {
 Jugador 4
 }
 
-STRING 14
+STRING 9
 {
 Jugador 5
 }
 
-STRING 15
+STRING 10
 {
 Jugador 6
 }
 
-STRING 16
-{
-Jugador 7
-}
-
-STRING 17
-{
-Jugador 8
-}
-
-STRING 18
-{
-Jugador 9
-}
-
-STRING 19
-{
-Jugador 10
-}
-
-STRING 20
-{
-Jugador 12
-}
-
-STRING 21
-{
-Jugador 12
-}
-
-STRING 22
+STRING 11
 {
 Fuerza 1
 }

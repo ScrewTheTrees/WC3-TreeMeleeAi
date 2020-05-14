@@ -1,99 +1,54 @@
-STRING 0
+ï»¿STRING 1
 {
-Dividi e Conquista
-}
-
-STRING 1
-{
-3v3v3v3 o 6v6
+Selva Pinargento
 }
 
 STRING 2
 {
-Troll e Golem controllano questa splendida foresta. Espanditi in fretta e versa il sangue dei tuoi nemici nelle acque del fiume.
+1v1 - 3v3 o TCT
 }
 
 STRING 3
 {
+Gli eroi mercenari possono essere assoldati facilmente. Scegli se allearti con altri giocatori o attaccare da solo, tra ricche risorse e colline boscose.
+}
+
+STRING 4
+{
 Blizzard Entertainment
 }
 
-STRING 7
-{
-
-}
-
-STRING 8
-{
-
-}
-
-STRING 9
-{
-
-}
-
-STRING 10
+STRING 5
 {
 Giocatore 1
 }
 
-STRING 11
+STRING 6
 {
 Giocatore 2
 }
 
-STRING 12
+STRING 7
 {
 Giocatore 3
 }
 
-STRING 13
+STRING 8
 {
 Giocatore 4
 }
 
-STRING 14
+STRING 9
 {
 Giocatore 5
 }
 
-STRING 15
+STRING 10
 {
 Giocatore 6
 }
 
-STRING 16
-{
-Giocatore 7
-}
-
-STRING 17
-{
-Giocatore 8
-}
-
-STRING 18
-{
-Giocatore 9
-}
-
-STRING 19
-{
-Giocatore 10
-}
-
-STRING 20
-{
-Giocatore 11
-}
-
-STRING 21
-{
-Giocatore 12
-}
-
-STRING 22
+STRING 11
 {
 Armata 1
 }

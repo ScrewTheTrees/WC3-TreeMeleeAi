@@ -39,3 +39,5 @@ Problems:
     Natives for checking what a unit trains/upgrades/researches, so its easier to iterate.
 
     Need a way to check the Gold/Wood cost of research at levels.
+
+    Need to implement so that workers keep "harvesting" properly.

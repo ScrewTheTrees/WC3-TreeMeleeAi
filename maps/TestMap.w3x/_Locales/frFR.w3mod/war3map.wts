@@ -1,99 +1,54 @@
-STRING 0
+ï»¿STRING 1
 {
-Diviser pour mieux régner
-}
-
-STRING 1
-{
-3c3c3c3 ou 6c6
+Forêt des Pins-Argentés
 }
 
 STRING 2
 {
-Des Trolls et des Golems contrôlent cette magnifique forêt. Développez-vous rapidement et faites couler à flots le sang de vos ennemis.
+1c1, 3c3 ou CPS
 }
 
 STRING 3
 {
+Vous n’aurez pas à chercher bien loin pour trouver des héros mercenaires à engager. Dans ces collines regorgeant de bois et de ressources, à vous de décider si vous préférez vous allier à d’autres ou combattre seul.
+}
+
+STRING 4
+{
 Blizzard Entertainment
 }
 
-STRING 7
-{
-
-}
-
-STRING 8
-{
-
-}
-
-STRING 9
-{
-
-}
-
-STRING 10
+STRING 5
 {
 Joueur 1
 }
 
-STRING 11
+STRING 6
 {
 Joueur 2
 }
 
-STRING 12
+STRING 7
 {
 Joueur 3
 }
 
-STRING 13
+STRING 8
 {
 Joueur 4
 }
 
-STRING 14
+STRING 9
 {
 Joueur 5
 }
 
-STRING 15
+STRING 10
 {
 Joueur 6
 }
 
-STRING 16
-{
-Joueur 7
-}
-
-STRING 17
-{
-Joueur 8
-}
-
-STRING 18
-{
-Joueur 9
-}
-
-STRING 19
-{
-Joueur 10
-}
-
-STRING 20
-{
-Joueur 11
-}
-
-STRING 21
-{
-Joueur 12
-}
-
-STRING 22
+STRING 11
 {
 Troupe 1
 }

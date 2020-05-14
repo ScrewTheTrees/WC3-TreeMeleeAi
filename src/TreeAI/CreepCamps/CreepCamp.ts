@@ -5,12 +5,13 @@ import {Quick} from "../../TreeLib/Quick";
 export class CreepCamp {
     public level: number = 0;
     public position: Point;
+    public playerKnowsDead: boolean = false;
 
     constructor(public units: unit[]) {
         let points: Point[] = [];
         for (let i = 0; i < units.length; i++) {
             let u = units[i];
-            this.level = GetUnitLevel(u);
+            this.level += GetUnitLevel(u);
             points.push(Point.fromWidget(u));
         }
 
@@ -29,7 +30,8 @@ export class CreepCamp {
 
     isCampDeadToPlayer(aiPlayer: player) {
         this.purge();
-        return (this.units.length == 0 && this.isCampVisible(aiPlayer));
+        if (this.units.length == 0 && this.isCampVisible(aiPlayer)) this.playerKnowsDead = true;
+        return this.playerKnowsDead;
     }
 
     isCampVisible(aiPlayer: player) {

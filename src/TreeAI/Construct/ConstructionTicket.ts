@@ -15,8 +15,6 @@ export class ConstructionTicket {
     public target: unit | undefined;
     public targetLocation: Point | undefined;
 
-    public timeloop: number = 0;
-
 
     isWorkerDead() {
         return IsUnitDeadBJ(this.worker.worker);
@@ -24,9 +22,5 @@ export class ConstructionTicket {
 
     isTargetDead() {
         return (this.target) && IsUnitDeadBJ(this.target);
-    }
-
-    isTimeExpired() {
-        return this.timeloop > 3;
     }
 }
