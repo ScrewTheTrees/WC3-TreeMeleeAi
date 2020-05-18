@@ -1,11 +1,13 @@
 import {AIPlayerHolder} from "../Player/AIPlayerHolder";
 import {Soldier} from "./Soldier";
-import {InverseFourCC} from "../../TreeLib/Misc";
 import {Platoon} from "./Platoon";
 import {ArmyGoal} from "./ArmyGoals/ArmyGoal";
 import {Entity} from "../../TreeLib/Entity";
 import {Point} from "../../TreeLib/Utility/Point";
 import {Quick} from "../../TreeLib/Quick";
+import {DamageDetectionSystem} from "../../TreeLib/DDS/DamageDetectionSystem";
+import {HitCallback} from "../../TreeLib/DDS/HitCallback";
+import {DDSFilterIsEnemy} from "../../TreeLib/DDS/Filters/DDSFilterIsEnemy";
 
 export class AIArmy extends Entity {
     private static ids: AIArmy[] = [];
@@ -18,14 +20,28 @@ export class AIArmy extends Entity {
     }
 
     private onUnitTrain = CreateTrigger();
+    private onUnitHit: HitCallback;
     public allPlatoons: Platoon[] = [];
+    public allSoldiers: Soldier[] = [];
     public goal: ArmyGoal | undefined;
+    public centerOfArmy: ArmyCenterReturn;
 
     constructor(public aiPlayer: AIPlayerHolder) {
         super();
         this._timerDelay = 1;
         TriggerRegisterPlayerUnitEvent(this.onUnitTrain, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_TRAIN_FINISH, null);
         TriggerAddAction(this.onUnitTrain, () => this.onUnitTrainAction());
+        this.centerOfArmy = this.getCenterOfArmy();
+        this.allSoldiers = this.fetchAllSoldiers();
+
+        this.onUnitHit = DamageDetectionSystem.registerBeforeDamageCalculation((hitObject) => {
+            for (let soldier of this.allSoldiers) {
+                if (soldier.soldier == hitObject.targetUnit || soldier.soldier == hitObject.attackingUnit) {
+                    soldier.takesDamage();
+                }
+            }
+        });
+        this.onUnitHit.addFilter(new DDSFilterIsEnemy());
     }
 
     private onUnitTrainAction() {
@@ -41,6 +57,9 @@ export class AIArmy extends Entity {
     }
 
     step() {
+        for (let soldier of this.allSoldiers) {
+            soldier.step();
+        }
         if (this.goal) {
             this.goal.updateTimer -= 1;
             if (this.goal.updateTimer <= 0) {
@@ -48,6 +67,8 @@ export class AIArmy extends Entity {
                 this.orderArmyToGoal(this.goal.getGoal());
             }
         }
+        this.centerOfArmy = this.getCenterOfArmy();
+        this.allSoldiers = this.fetchAllSoldiers();
     }
 
     public getArmySize() {
@@ -61,7 +82,19 @@ export class AIArmy extends Entity {
     public orderArmyToGoal(goalPoint: Point) {
         for (let platoon of this.allPlatoons) {
             let g = platoon.getUnitsAsGroup();
-            GroupPointOrder(g, "attack", goalPoint.x, goalPoint.y);
+            for (let soldier of platoon.soldiers) {
+                if (soldier.inCombat()) GroupRemoveUnit(g, soldier.soldier);// Dont update me
+                if (this.centerOfArmy.straySoldiers.indexOf(soldier) >= 0) {
+                    GroupRemoveUnit(g, soldier.soldier);// I am stray
+                    IssuePointOrder(soldier.soldier, "move", this.centerOfArmy.centerPoint.x, this.centerOfArmy.centerPoint.y);
+                }
+            }
+
+            if (this.centerOfArmy.getArmyAssemblePercentage() >= this.aiPlayer.battleConfig.armyGatherPercentage) {
+                GroupPointOrder(g, "attack", goalPoint.x, goalPoint.y);
+            } else {
+                GroupPointOrder(g, "attack", this.centerOfArmy.centerPoint.x, this.centerOfArmy.centerPoint.y);
+            }
             DestroyGroup(g);
         }
     }
@@ -70,6 +103,7 @@ export class AIArmy extends Entity {
         this.removeGoal();
         this.goal = goal;
         goal.startGoal();
+        for (let soldier of this.allSoldiers) soldier.combatTimer = 0;
         this.orderArmyToGoal(goal.getGoal());
     }
 
@@ -91,14 +125,12 @@ export class AIArmy extends Entity {
             platoon.purge(); //Just make sure there is no deadweight
             if (!platoon.isSatisfied()) {
                 platoon.addSoldier(soldier);
-                print("add to platoon:", i, InverseFourCC(GetUnitTypeId(soldier.soldier)));
                 return;
             }
         }
         let newPlatoon = new Platoon();
         newPlatoon.addSoldier(soldier);
         let n = this.allPlatoons.push(newPlatoon);
-        print("Make new platoon:", (n - 1), InverseFourCC(GetUnitTypeId(soldier.soldier)));
     }
 
     public reformPlatoons() {
@@ -115,7 +147,7 @@ export class AIArmy extends Entity {
         }
     }
 
-    public fetchAllSoldiers() {
+    private fetchAllSoldiers() {
         let army: Soldier[] = [];
         for (let platoon of this.allPlatoons) {
             army.push(...platoon.soldiers);
@@ -123,8 +155,8 @@ export class AIArmy extends Entity {
         return army;
     }
 
-    public getCenterOfArmy(): ArmyCenterReturn {
-        const army = this.fetchAllSoldiers();
+    private getCenterOfArmy(): ArmyCenterReturn {
+        const army = this.allSoldiers;
         let candidate = new Point(0, 0);
         for (let soldier of army) {
             candidate.addOffset(Point.fromWidget(soldier.soldier));
@@ -179,7 +211,7 @@ class ArmyCenterReturn {
                 public centerPoint: Point) {
     }
 
-    getArmyAssemblePercentage() {
+    getArmyAssemblePercentage(): number {
         if (this.fullArmy.length == 0) return 1;
         return this.currentArmy.length / this.fullArmy.length;
     }

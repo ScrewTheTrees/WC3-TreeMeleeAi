@@ -41,3 +41,5 @@ Problems:
     Need a way to check the Gold/Wood cost of research at levels.
 
     Need to implement so that workers keep "harvesting" properly.
+
+    The normal computer behavior interferes with workers, in particular related to the goldmine.

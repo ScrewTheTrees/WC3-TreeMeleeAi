@@ -32,8 +32,6 @@ export class AICreepCamps extends Entity {
                 Logger.critical("Why is it like this?");
             }
         }
-
-        print("Amount of camps: " + this.camps.length);
     }
 
     step() {

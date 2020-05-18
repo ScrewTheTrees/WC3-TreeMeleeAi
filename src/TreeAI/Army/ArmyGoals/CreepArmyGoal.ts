@@ -21,6 +21,6 @@ export class CreepArmyGoal implements ArmyGoal {
 
     }
 
-    updateTimer: number = 10;
-    updateTimerResetValue: number = 10;
+    updateTimer: number = 5;
+    updateTimerResetValue: number = 5;
 }

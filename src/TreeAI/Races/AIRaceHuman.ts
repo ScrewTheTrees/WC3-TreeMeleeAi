@@ -67,7 +67,7 @@ export class AIRaceHuman extends AIRaceAbstract {
         this.aiPlayer.stats.resetVirtualEconomy();
         this.constructer.resetQuery();
 
-        this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.PEASANT), 12));
+        this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.PEASANT), 13));
 
         if (this.aiPlayer.battleConfig.heroes[0]) this.trainer.trainUnit(new TrainingTicket(FourCC(this.aiPlayer.battleConfig.heroes[0]), 1));
 
@@ -77,11 +77,12 @@ export class AIRaceHuman extends AIRaceAbstract {
         if (!this.townAllocator.First().isHallAlive()) {
             this.constructer.constructBuilding(FourCC(BaseUnits.TOWNHALL), 1, this.townAllocator.First(), TownBuildingSizes.VERY_PRECISE, ConstructionPriority.CLOSE_TO_MINE);
         }
-        this.constructer.constructBuilding(FourCC(BaseUnits.ALTAROFKINGS), 1, this.townAllocator.First(), undefined, ConstructionPriority.HALL_AWAY_FROM_MINE);
-        this.constructer.constructBuilding(FourCC(BaseUnits.HUMANBARRACKS), 1, this.townAllocator.First(), undefined, ConstructionPriority.HALL_AWAY_FROM_MINE);
+
         this.constructer.constructBuilding(FourCC(BaseUnits.FARM), math.floor(((this.aiPlayer.stats.getCurrentFood() / 6) * 1.5) - 0.5), undefined);
 
-        this.constructer.constructBuilding(FourCC(BaseUnits.HUMANLUMBERMILL), 1, this.townAllocator.First(), TownBuildingSizes.VERY_PRECISE, ConstructionPriority.CLOSE_TO_TREE);
+        this.constructer.constructBuilding(FourCC(BaseUnits.ALTAROFKINGS), 1, this.townAllocator.First(), undefined, ConstructionPriority.HALL_AWAY_FROM_MINE);
+        this.constructer.constructBuilding(FourCC(BaseUnits.HUMANBARRACKS), 1, this.townAllocator.First(), undefined, ConstructionPriority.HALL_AWAY_FROM_MINE);
+
         this.constructer.constructBuilding(FourCC(BaseUnits.BLACKSMITH), 1, this.townAllocator.First());
 
         this.constructer.constructThenUpgrade(FourCC(BaseUnits.SCOUTTOWER), FourCC(BaseUnits.HUMANARCANETOWER), 1,
@@ -89,6 +90,7 @@ export class AIRaceHuman extends AIRaceAbstract {
 
         this.constructer.constructBuilding(FourCC(BaseUnits.ARCANEVAULT), 1, this.townAllocator.First(), TownBuildingSizes.DENSE, ConstructionPriority.CLOSE_TO_MINE);
 
+        this.constructer.constructBuilding(FourCC(BaseUnits.HUMANLUMBERMILL), 1, this.townAllocator.First(), TownBuildingSizes.VERY_PRECISE, ConstructionPriority.CLOSE_TO_TREE);
 
         if (!this.hasTier2Hall() && this.hasTier1Hall()) {
             this.constructer.upgradeBuilding(FourCC(BaseUnits.KEEP), 1, undefined);
@@ -128,10 +130,10 @@ export class AIRaceHuman extends AIRaceAbstract {
     }
 
     private handleAttackOrders() {
-        let armyPosition = this.army.getCenterOfArmy();
+        let armyPosition = this.army.centerOfArmy;
 
         if (this.army.isGoalFinished()) {
-            if (this.army.getArmySize() >= 4) {
+            if (this.army.getArmySize() >= 3) {
                 let closestCamp = this.creepCamps.getClosestCamp(armyPosition.centerPoint.getBetween(this.townAllocator.First().place), 1, this.army.getLevel());
                 if (closestCamp) this.army.setGoal(new CreepArmyGoal(closestCamp));
                 else print("No camp found.");

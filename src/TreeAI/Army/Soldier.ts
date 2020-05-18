@@ -6,7 +6,21 @@ export class Soldier {
 
     }
 
-    getSoldiersNearby(units: Soldier[]): number {
+    public combatTimer = 0;
+
+    public takesDamage() {
+        this.combatTimer = 5;
+    }
+
+    public step() {
+        if (this.combatTimer > 0) this.combatTimer -= 1;
+    }
+
+    public inCombat(): boolean {
+        return this.combatTimer > 0;
+    }
+
+    public getSoldiersNearby(units: Soldier[]): number {
         let count = 0;
         for (let soldier of units) {
             if (Point.fromWidget(this.soldier).distanceTo(Point.fromWidget(soldier.soldier)) <= 1800) count += 1;

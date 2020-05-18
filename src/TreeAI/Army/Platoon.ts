@@ -16,7 +16,7 @@ export class Platoon {
     purge() {
         for (let i = 0; i < this.soldiers.length; i++) {
             let soldier = this.soldiers[i];
-            if (!IsValidUnit(soldier.soldier)) {
+            if (!IsValidUnit(soldier.soldier) || IsUnitDeadBJ(soldier.soldier)) {
                 Quick.Slice(this.soldiers, i);
                 i -= 1;
             }
