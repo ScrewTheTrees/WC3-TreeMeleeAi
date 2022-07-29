@@ -1,20 +1,20 @@
-import {Point} from "../../TreeLib/Utility/Point";
-import {IsValidUnit} from "../../TreeLib/Misc";
+import {Vector2} from "wc3-treelib/src/TreeLib/Utility/Data/Vector2";
+import {IsValidUnit} from "wc3-treelib/src/TreeLib/Misc";
 import {Targeting} from "../Targeting";
 import GetClosestTreeToLocationInRange = Targeting.GetClosestTreeToLocationInRange;
 
 export class Town {
     constructor(public hallUnit: unit,
                 public mineUnit: unit) {
-        this.place = Point.fromWidget(this.hallUnit);
+        this.place = Vector2.fromWidget(this.hallUnit);
 
-        let tree = GetClosestTreeToLocationInRange(Point.fromWidget(this.mineUnit), 4096);
-        if (tree) this.treePoint = Point.fromWidget(tree);
-        else this.treePoint = Point.fromWidget(this.mineUnit);
+        let tree = GetClosestTreeToLocationInRange(Vector2.fromWidget(this.mineUnit), 4096);
+        if (tree) this.treePoint = Vector2.fromWidget(tree);
+        else this.treePoint = Vector2.fromWidget(this.mineUnit);
     }
 
-    public place: Point;
-    public treePoint: Point;
+    public place: Vector2;
+    public treePoint: Vector2;
 
     isHallAlive() {
         return IsValidUnit(this.hallUnit) || IsUnitAliveBJ(this.hallUnit);

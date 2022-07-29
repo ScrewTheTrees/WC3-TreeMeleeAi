@@ -1,7 +1,7 @@
-import {BaseUnits} from "../../TreeLib/GeneratedBase/BaseUnits";
-import {BaseUpgrades} from "../../TreeLib/GeneratedBase/BaseUpgrades";
+import {BaseUnits} from "wc3-treelib/src/TreeLib/GeneratedBase/BaseUnits";
+import {BaseUpgrades} from "wc3-treelib/src/TreeLib/GeneratedBase/BaseUpgrades";
 
-export const ResearchRegistry: string[][] = [];
+export const ResearchRegistry: Record<string, string[]> = {};
 
 ResearchRegistry[BaseUpgrades.HUMAN_BACKPACK] = [BaseUnits.TOWNHALL, BaseUnits.KEEP, BaseUnits.CASTLE];
 

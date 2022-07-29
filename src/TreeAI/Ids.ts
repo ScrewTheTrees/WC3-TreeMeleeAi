@@ -62,19 +62,19 @@ export namespace Ids {
         ZTtc = "ZTtc",
     }
 
-    export function IsHallId(type: string) {
-        return (HallIds[type] != null)
+    export function IsHallId(type: string): boolean {
+        return ((<any>HallIds)[type] != null)
     }
 
     export function IsPeonId(type: string) {
-        return (PeonIds[type] != null)
+        return ((<any>PeonIds)[type] != null)
     }
 
     export function IsGoldmineId(type: string) {
-        return (GoldmineIds[type] != null)
+        return ((<any>GoldmineIds)[type] != null)
     }
 
     export function IsTreeType(type: string) {
-        return (TreeTypes[type] != null)
+        return ((<any>TreeTypes)[type] != null)
     }
 }

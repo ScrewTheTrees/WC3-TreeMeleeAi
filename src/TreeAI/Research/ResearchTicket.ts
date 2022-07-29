@@ -1,5 +1,5 @@
 import {GetResearchRegistry} from "./ResearchRegistry";
-import {InverseFourCC} from "../../TreeLib/Misc";
+import {InverseFourCC} from "wc3-treelib/src/TreeLib/Misc";
 
 export class ResearchTicket {
     public researcherTypes: number[];

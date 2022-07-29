@@ -1,4 +1,4 @@
-export const TrainingRegistry: string[][] = [];
+export const TrainingRegistry: Record<string, string[]> = {};
 
 TrainingRegistry["hpea"] = ["htow", "hkee", "hcas"];
 TrainingRegistry["hfoo"] = ["hbar"];

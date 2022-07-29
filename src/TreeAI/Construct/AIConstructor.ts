@@ -7,16 +7,17 @@ import {AIWorkerGroups} from "../Workers/AIWorkerGroups";
 import {ConstructionTicket} from "./ConstructionTicket";
 import {AITownBuildingLocation} from "../Towns/AITownBuildingLocation";
 import {WorkerOrders} from "../Workers/WorkerOrders";
-import {GetAliveUnitsOfTypeByPlayer, InverseFourCC} from "../../TreeLib/Misc";
+import {InverseFourCC} from "wc3-treelib/src/TreeLib/Misc";
 import {AIWorkerHandler} from "../Workers/AIWorkerHandler";
 import {AIBuildings} from "../Buildings/AIBuildings";
-import {Entity} from "../../TreeLib/Entity";
+import {Entity} from "wc3-treelib/src/TreeLib/Entity";
 import {UpgradeTicket} from "./UpgradeTicket";
 import {GetUpgradeRegistry} from "./UpgradeRegistry";
 import {Building} from "../Buildings/Building";
-import {Logger} from "../../TreeLib/Logger";
+import {Logger} from "wc3-treelib/src/TreeLib/Logger";
 import {ConstructionPriority} from "./ConstructionPriority";
-import {Point} from "../../TreeLib/Utility/Point";
+import {Vector2} from "wc3-treelib/src/TreeLib/Utility/Data/Vector2";
+import {Targeting} from "../Targeting";
 
 export class AIConstructor extends Entity {
     private static ids: AIConstructor[] = [];
@@ -35,8 +36,7 @@ export class AIConstructor extends Entity {
     private buildings: AIBuildings;
 
     constructor(public aiPlayer: AIPlayerHolder) {
-        super();
-        this._timerDelay = 1;
+        super(1);
         this.constructionList = new ConstructionList();
         this.townAllocator = AITownAllocator.getInstance(aiPlayer);
         this.workerGroups = AIWorkerGroups.getInstance(aiPlayer);
@@ -167,7 +167,7 @@ export class AIConstructor extends Entity {
     }
 
     private resolveUnitsInConstruction(unitType: number) {
-        return GetAliveUnitsOfTypeByPlayer(unitType, this.aiPlayer.aiPlayer).length;
+        return Targeting.GetAliveUnitsOfTypeByPlayer(unitType, this.aiPlayer.aiPlayer).length;
     }
 
     public getUnusedTicketByUnitType(unitType: number) {

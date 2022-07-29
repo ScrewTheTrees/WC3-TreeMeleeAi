@@ -1,12 +1,12 @@
-import {Entity} from "../../TreeLib/Entity";
+import {Entity} from "wc3-treelib/src/TreeLib/Entity";
 import {AIPlayerHolder} from "../Player/AIPlayerHolder";
 import {AIArmy} from "../Army/AIArmy";
-import {Delay} from "../../TreeLib/Utility/Delay";
 import {CreepArmyGoal} from "../Army/ArmyGoals/CreepArmyGoal";
-import {Quick} from "../../TreeLib/Quick";
-import {InverseFourCC} from "../../TreeLib/Misc";
-import {InputManager} from "../../TreeLib/InputManager/InputManager";
+import {Quick} from "wc3-treelib/src/TreeLib/Quick";
+import {InverseFourCC} from "wc3-treelib/src/TreeLib/Misc";
 import {AIWorkerAllocator} from "../Workers/AIWorkerAllocator";
+import { Delay } from "wc3-treelib/src/TreeLib/Services/Delay/Delay";
+import {InputManager} from "wc3-treelib/src/TreeLib/Services/InputManager/InputManager";
 
 export class Debug extends Entity {
     private board: multiboard;
@@ -14,12 +14,11 @@ export class Debug extends Entity {
     private workers: AIWorkerAllocator;
 
     constructor(public aiPlayer: AIPlayerHolder) {
-        super();
-        this._timerDelay = 0.5;
+        super(0.25);
         this.board = CreateMultiboardBJ(1, 20, "Debug UI")
-        MultiboardSetItemsWidth(this.board, 0.4);
+        MultiboardSetItemsWidth(this.board, 0.2);
         MultiboardDisplay(this.board, false);
-        Delay.addDelay(() => MultiboardDisplay(this.board, true));
+        Delay.getInstance().addDelay(() => MultiboardDisplay(this.board, true));
 
         this.army = AIArmy.getInstance(aiPlayer);
         this.workers = AIWorkerAllocator.getInstance(aiPlayer);

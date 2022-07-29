@@ -1,5 +1,5 @@
-import {Point} from "../../TreeLib/Utility/Point";
-import {IsValidUnit} from "../../TreeLib/Misc";
+import {Vector2} from "wc3-treelib/src/TreeLib/Utility/Data/Vector2";
+import {IsValidUnit} from "wc3-treelib/src/TreeLib/Misc";
 
 export class Soldier {
     constructor(public soldier: unit) {
@@ -23,7 +23,7 @@ export class Soldier {
     public getSoldiersNearby(units: Soldier[]): number {
         let count = 0;
         for (let soldier of units) {
-            if (Point.fromWidget(this.soldier).distanceTo(Point.fromWidget(soldier.soldier)) <= 1800) count += 1;
+            if (Vector2.fromWidget(this.soldier).distanceTo(Vector2.fromWidget(soldier.soldier)) <= 1800) count += 1;
         }
         return count;
     }

@@ -1,11 +1,11 @@
 import {Worker} from "./Worker";
 import {Town} from "../Towns/Town";
-import {Quick} from "../../TreeLib/Quick";
+import {Quick} from "wc3-treelib/src/TreeLib/Quick";
 import {AITownAllocator} from "../Towns/AITownAllocator";
 import {WorkerGroup} from "./WorkerGroup";
 import {WorkerOrders} from "./WorkerOrders";
 import {AIPlayerHolder} from "../Player/AIPlayerHolder";
-import {Point} from "../../TreeLib/Utility/Point";
+import {Vector2} from "wc3-treelib/src/TreeLib/Utility/Data/Vector2";
 
 export class AIWorkerGroups {
     private static ids: AIWorkerGroups[] = [];
@@ -76,7 +76,7 @@ export class AIWorkerGroups {
             let worker = this.idleIndexes[i];
             if (worker.orders == WorkerOrders.ORDER_WOOD  //Eglible to be constructors
                 || (worker.orders == WorkerOrders.ORDER_GOLDMINE && this.aiPlayer.workerConfig.goldMinerCanBuild)) {
-                if (retvar == undefined || Point.fromWidget(retvar.worker).distanceTo(town.place) < Point.fromWidget(worker.worker).distanceTo(town.place)) //Get closest one
+                if (retvar == undefined || Vector2.fromWidget(retvar.worker).distanceTo(town.place) < Vector2.fromWidget(worker.worker).distanceTo(town.place)) //Get closest one
                     retvar =  worker; //Idle workers best workers.
             }
         }

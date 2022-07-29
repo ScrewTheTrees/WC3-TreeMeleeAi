@@ -1,7 +1,7 @@
-import {Logger} from "./TreeLib/Logger";
 import {AIRaceHuman} from "./TreeAI/Races/AIRaceHuman";
-import {TreeLib} from "./TreeLib/TreeLib";
 import {Debug} from "./TreeAI/Debug/Debug";
+import {Logger} from "wc3-treelib/src/TreeLib/Logger";
+import {TreeLibMeta} from "wc3-treelib/src/TreeLib/TreeLibMeta";
 
 export class Game {
     constructor() {
@@ -12,7 +12,7 @@ export class Game {
         Logger.doLogDebug = true;
 
         xpcall(() => {
-            let mapVersion = TreeLib.getMapVersion();
+            let mapVersion = TreeLibMeta.getMapVersion();
             print(`Build: ${mapVersion.major}.${mapVersion.minor}.${mapVersion.build}  ${mapVersion.date}`);
             let p = new AIRaceHuman(Player(0));
             let p2 = new AIRaceHuman(Player(1));

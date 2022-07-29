@@ -1,21 +1,21 @@
-import {Point} from "../../TreeLib/Utility/Point";
-import {IsValidUnit} from "../../TreeLib/Misc";
-import {Quick} from "../../TreeLib/Quick";
+import {Vector2} from "wc3-treelib/src/TreeLib/Utility/Data/Vector2";
+import {IsValidUnit} from "wc3-treelib/src/TreeLib/Misc";
+import {Quick} from "wc3-treelib/src/TreeLib/Quick";
 
 export class CreepCamp {
     public level: number = 0;
-    public position: Point;
+    public position: Vector2;
     public playerKnowsDead: boolean = false;
 
     constructor(public units: unit[]) {
-        let points: Point[] = [];
+        let points: Vector2[] = [];
         for (let i = 0; i < units.length; i++) {
             let u = units[i];
             this.level += GetUnitLevel(u);
-            points.push(Point.fromWidget(u));
+            points.push(Vector2.fromWidget(u));
         }
 
-        this.position = Point.getCenterOfPoints(points);
+        this.position = Vector2.getCenterOfPoints(points);
     }
 
     purge() {

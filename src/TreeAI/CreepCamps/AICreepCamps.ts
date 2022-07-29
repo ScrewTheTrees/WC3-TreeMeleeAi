@@ -1,9 +1,9 @@
 import {AIPlayerHolder} from "../Player/AIPlayerHolder";
-import {Quick} from "../../TreeLib/Quick";
-import {Point} from "../../TreeLib/Utility/Point";
+import {Quick} from "wc3-treelib/src/TreeLib/Quick";
+import {Vector2} from "wc3-treelib/src/TreeLib/Utility/Data/Vector2";
 import {CreepCamp} from "./CreepCamp";
-import {Logger} from "../../TreeLib/Logger";
-import {Entity} from "../../TreeLib/Entity";
+import {Logger} from "wc3-treelib/src/TreeLib/Logger";
+import {Entity} from "wc3-treelib/src/TreeLib/Entity";
 
 export class AICreepCamps extends Entity {
     private static ids: AICreepCamps[] = [];
@@ -20,8 +20,7 @@ export class AICreepCamps extends Entity {
     public camps: CreepCamp[] = [];
 
     constructor(public aiPlayer: AIPlayerHolder) {
-        super();
-        this._timerDelay = 1;
+        super(1);
         let group = Quick.GroupToUnitArrayDestroy(GetUnitsOfPlayerAll(Player(PLAYER_NEUTRAL_AGGRESSIVE)));
         for (let i = 0; i < group.length; i++) {
             let u = group[i];
@@ -44,7 +43,7 @@ export class AICreepCamps extends Entity {
         }
     }
 
-    public getClosestCamp(fromLoc: Point, startLevel: number, endLevel: number) {
+    public getClosestCamp(fromLoc: Vector2, startLevel: number, endLevel: number) {
         let finalCamp: CreepCamp | undefined;
         let dist: number = 99999999999;
 
@@ -62,7 +61,7 @@ export class AICreepCamps extends Entity {
     private squashNearby(group: unit[], u: unit) {
         let newGroup: unit[] = [];
         for (let i = 0; i < group.length; i++) {
-            if (Point.fromWidget(u).distanceTo(Point.fromWidget(group[i])) <= this.campRadius) {
+            if (Vector2.fromWidget(u).distanceTo(Vector2.fromWidget(group[i])) <= this.campRadius) {
                 newGroup.push(group[i]);
                 Quick.Slice(group, i);
                 i -= 1;

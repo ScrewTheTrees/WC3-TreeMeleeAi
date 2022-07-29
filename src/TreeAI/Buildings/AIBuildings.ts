@@ -1,7 +1,7 @@
 import {AITownAllocator} from "../Towns/AITownAllocator";
-import {Point} from "../../TreeLib/Utility/Point";
-import {Quick} from "../../TreeLib/Quick";
-import {InverseFourCC, IsOfAnyType} from "../../TreeLib/Misc";
+import {Vector2} from "wc3-treelib/src/TreeLib/Utility/Data/Vector2";
+import {Quick} from "wc3-treelib/src/TreeLib/Quick";
+import {InverseFourCC, IsOfAnyType} from "wc3-treelib/src/TreeLib/Misc";
 import {Building} from "./Building";
 import {BuildingState} from "./BuildingState";
 import {AIPlayerHolder} from "../Player/AIPlayerHolder";
@@ -82,7 +82,7 @@ export class AIBuildings {
         for (let i = 0; i < units.length; i++) {
             let building = units[i];
             this.townAllocator.makeTown(building);
-            let building1 = new Building(building, BuildingState.IDLE, this.townAllocator.getClosestTown(Point.fromWidget(building)).value);
+            let building1 = new Building(building, BuildingState.IDLE, this.townAllocator.getClosestTown(Vector2.fromWidget(building)).value);
             this.buildings.push(building1);//Make town
         }
     }
@@ -91,7 +91,7 @@ export class AIBuildings {
         const building = GetTriggerUnit();
 
         this.townAllocator.makeTown(building);
-        let building1 = new Building(building, BuildingState.CONSTRUCTING, this.townAllocator.getClosestTown(Point.fromWidget(building)).value);
+        let building1 = new Building(building, BuildingState.CONSTRUCTING, this.townAllocator.getClosestTown(Vector2.fromWidget(building)).value);
         this.buildings.push(building1);//Make town
         this.onStartConstructCallbacks.forEach((func) => {
             func(building1);

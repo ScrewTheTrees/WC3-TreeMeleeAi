@@ -1,9 +1,8 @@
 import {AIPlayerHolder} from "../Player/AIPlayerHolder";
 import {AIBuildings} from "../Buildings/AIBuildings";
 import {TrainingTicket} from "./TrainingTicket";
-import {GetAliveUnitsOfTypeByPlayer} from "../../TreeLib/Misc";
 import {Building} from "../Buildings/Building";
-import {Logger} from "../../TreeLib/Logger";
+import {Targeting} from "../Targeting";
 
 export class AITraining {
     private static ids: AITraining[] = [];
@@ -29,11 +28,11 @@ export class AITraining {
     }
 
     public countFinishedOfType(unitType: number) {
-        return GetAliveUnitsOfTypeByPlayer(unitType, this.aiPlayer.aiPlayer).length;
+        return Targeting.GetAliveUnitsOfTypeByPlayer(unitType, this.aiPlayer.aiPlayer).length;
     }
 
     public countOfType(unitType: number) {
-        return GetAliveUnitsOfTypeByPlayer(unitType, this.aiPlayer.aiPlayer).length + this.buildings.countInTraining(unitType);
+        return Targeting.GetAliveUnitsOfTypeByPlayer(unitType, this.aiPlayer.aiPlayer).length + this.buildings.countInTraining(unitType);
     }
 
     public getAmountDifference(ticket: TrainingTicket) {

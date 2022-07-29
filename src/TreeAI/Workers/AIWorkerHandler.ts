@@ -1,7 +1,7 @@
 import {Worker} from "./Worker";
 import {Town} from "../Towns/Town";
 import {Targeting} from "../Targeting";
-import {InverseFourCC, IsValidUnit} from "../../TreeLib/Misc";
+import {InverseFourCC, IsValidUnit} from "wc3-treelib/src/TreeLib/Misc";
 import {Ids} from "../Ids";
 import {WorkerGroup} from "./WorkerGroup";
 import {WorkerOrders} from "./WorkerOrders";
@@ -9,7 +9,7 @@ import {AIWorkerAllocator} from "./AIWorkerAllocator";
 import {AIWorkerGroups} from "./AIWorkerGroups";
 import {AITownAllocator} from "../Towns/AITownAllocator";
 import {AIPlayerHolder} from "../Player/AIPlayerHolder";
-import {Delay} from "../../TreeLib/Utility/Delay";
+import {Delay} from "wc3-treelib/src/TreeLib/Services/Delay/Delay";
 
 export class AIWorkerHandler {
     private static ids: AIWorkerHandler[] = [];
@@ -51,7 +51,7 @@ export class AIWorkerHandler {
 
     private workerAdderAction() {
         let id = GetTrainedUnit();
-        Delay.addDelay(() => {
+        Delay.getInstance().addDelay(() => {
             this.workerAllocator.addWorker(id);
             let worker = this.workerAllocator.getByUnit(id);
             if (worker != null) {

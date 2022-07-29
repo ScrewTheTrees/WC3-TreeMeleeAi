@@ -1,4 +1,4 @@
-export const UpgradeRegistry: string[][] = [];
+export const UpgradeRegistry: Record<string, string[]> = {};
 
 UpgradeRegistry["hkee"] = ["htow"];
 UpgradeRegistry["hcas"] = ["hkee"];

@@ -1,14 +1,31 @@
 {
   "compilerOptions": {
-    "allowJs": false,
-    "strictPropertyInitialization": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
+    "allowJs": true,
+    "strict": true,
+    "noImplicitThis": true,
     "sourceMap": false,
     "target": "es6",
-    "moduleResolution": "classic",
+
+    "outDir": "./target",
+    "baseUrl": "./src",
     "lib": [
-      "es6"
+      "esnext"
+    ],
+
+    "moduleResolution": "classic",
+    "paths": {
+      "*": [
+        "../node_modules/*/src/index",
+        "../node_modules/*/lib/index",
+        "../node_modules/*/index",
+        "../node_modules/*/dist/index",
+        "../node_modules/*"
+      ]
+    },
+    "plugins": [
+      {
+        "transform": "war3-transformer"
+      }
     ],
     "types": [
       "lua-types/core/coroutine",
@@ -18,17 +35,27 @@
       "lua-types/core/modules",
       "lua-types/core/string",
       "lua-types/core/table",
-      "lua-types/core/debug",
+      "lua-types/core/os",
       "lua-types/special/5.3",
-      "lua-types/core/os"
+      "wc3-treelib"
     ]
   },
+  "include": [
+    "src",
+    "lib"
+  ],
+  "exclude": [
+    "bin",
+  ],
   "tstl": {
     "luaTarget": "5.3",
     "luaLibImport": "require",
     "sourceMapTraceback": false,
     "noHeader": true,
-    "luaBundle": "target\\tstl_output.lua",
-    "luaBundleEntry": "src\\main.ts"
+    "luaBundle": "target/tstl_output.lua",
+    "luaBundleEntry": "src\\main.ts",
+    "luaPlugins": [
+      { "name": "tstl-doender-plugin" }
+    ]
   }
 }

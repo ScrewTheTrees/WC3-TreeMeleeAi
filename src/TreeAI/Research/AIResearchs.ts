@@ -3,7 +3,7 @@ import {AIPlayerHolder} from "../Player/AIPlayerHolder";
 import {AIBuildings} from "../Buildings/AIBuildings";
 import {ResearchTicket} from "./ResearchTicket";
 import {GetResearchRegistry, ResearchRegistry} from "./ResearchRegistry";
-import {InverseFourCC} from "../../TreeLib/Misc";
+import {InverseFourCC} from "wc3-treelib/src/TreeLib/Misc";
 import {Building} from "../Buildings/Building";
 
 

@@ -1,7 +1,7 @@
 import {Targeting} from "../Targeting";
 import {Ids} from "../Ids";
 import {Worker} from "./Worker";
-import {Quick} from "../../TreeLib/Quick";
+import {Quick} from "wc3-treelib/src/TreeLib/Quick";
 import {AIPlayerHolder} from "../Player/AIPlayerHolder";
 
 export class AIWorkerAllocator {

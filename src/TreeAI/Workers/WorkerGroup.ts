@@ -1,6 +1,6 @@
 import {Worker} from "./Worker";
 import {Town} from "../Towns/Town";
-import {Quick} from "../../TreeLib/Quick";
+import {Quick} from "wc3-treelib/src/TreeLib/Quick";
 import {WorkerOrders} from "./WorkerOrders";
 
 export class WorkerGroup {

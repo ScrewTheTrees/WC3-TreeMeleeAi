@@ -1,5 +1,5 @@
 import {GetTrainRegistry} from "./TrainingRegistry";
-import {InverseFourCC} from "../../TreeLib/Misc";
+import {InverseFourCC} from "wc3-treelib/src/TreeLib/Misc";
 
 export class TrainingTicket {
     public trainingTypes: number[] = [];

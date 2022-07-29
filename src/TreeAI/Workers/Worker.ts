@@ -1,4 +1,4 @@
-import {InverseFourCC} from "../../TreeLib/Misc";
+import {InverseFourCC} from "wc3-treelib/src/TreeLib/Misc";
 import {WorkerOrders} from "./WorkerOrders";
 
 export class Worker {

@@ -2,12 +2,12 @@ import {AIPlayerHolder} from "../Player/AIPlayerHolder";
 import {Soldier} from "./Soldier";
 import {Platoon} from "./Platoon";
 import {ArmyGoal} from "./ArmyGoals/ArmyGoal";
-import {Entity} from "../../TreeLib/Entity";
-import {Point} from "../../TreeLib/Utility/Point";
-import {Quick} from "../../TreeLib/Quick";
-import {DamageDetectionSystem} from "../../TreeLib/DDS/DamageDetectionSystem";
-import {HitCallback} from "../../TreeLib/DDS/HitCallback";
-import {DDSFilterIsEnemy} from "../../TreeLib/DDS/Filters/DDSFilterIsEnemy";
+import {Entity} from "wc3-treelib/src/TreeLib/Entity";
+import {Vector2} from "wc3-treelib/src/TreeLib/Utility/Data/Vector2";
+import {Quick} from "wc3-treelib/src/TreeLib/Quick";
+import {DamageDetectionSystem} from "wc3-treelib/src/TreeLib/Services/DDS/DamageDetectionSystem";
+import {HitCallback} from "wc3-treelib/src/TreeLib/Services/DDS/HitCallback";
+import {DDSFilterIsEnemy} from "wc3-treelib/src/TreeLib/Services/DDS/Filters/DDSFilterIsEnemy";
 
 export class AIArmy extends Entity {
     private static ids: AIArmy[] = [];
@@ -27,14 +27,13 @@ export class AIArmy extends Entity {
     public centerOfArmy: ArmyCenterReturn;
 
     constructor(public aiPlayer: AIPlayerHolder) {
-        super();
-        this._timerDelay = 1;
+        super(0.5);
         TriggerRegisterPlayerUnitEvent(this.onUnitTrain, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_TRAIN_FINISH, null);
         TriggerAddAction(this.onUnitTrain, () => this.onUnitTrainAction());
         this.centerOfArmy = this.getCenterOfArmy();
         this.allSoldiers = this.fetchAllSoldiers();
 
-        this.onUnitHit = DamageDetectionSystem.registerBeforeDamageCalculation((hitObject) => {
+        this.onUnitHit = DamageDetectionSystem.getInstance().registerBeforeDamageCalculation((hitObject) => {
             for (let soldier of this.allSoldiers) {
                 if (soldier.soldier == hitObject.targetUnit || soldier.soldier == hitObject.attackingUnit) {
                     soldier.takesDamage();
@@ -61,7 +60,7 @@ export class AIArmy extends Entity {
             soldier.step();
         }
         if (this.goal) {
-            this.goal.updateTimer -= 1;
+            this.goal.updateTimer -= this.timerDelay;
             if (this.goal.updateTimer <= 0) {
                 this.goal.updateTimer = this.goal.updateTimerResetValue;
                 this.orderArmyToGoal(this.goal.getGoal());
@@ -79,7 +78,7 @@ export class AIArmy extends Entity {
         return count;
     }
 
-    public orderArmyToGoal(goalPoint: Point) {
+    public orderArmyToGoal(goalPoint: Vector2) {
         for (let platoon of this.allPlatoons) {
             let g = platoon.getUnitsAsGroup();
             for (let soldier of platoon.soldiers) {
@@ -157,16 +156,16 @@ export class AIArmy extends Entity {
 
     private getCenterOfArmy(): ArmyCenterReturn {
         const army = this.allSoldiers;
-        let candidate = new Point(0, 0);
+        let candidate = Vector2.new(0, 0);
         for (let soldier of army) {
-            candidate.addOffset(Point.fromWidget(soldier.soldier));
+            candidate.addOffset(Vector2.fromWidget(soldier.soldier));
         }
         candidate.x /= army.length;
         candidate.y /= army.length;
 
         let averageDistance = 0;
         for (let soldier of army) {
-            averageDistance = Point.fromWidget(soldier.soldier).distanceToSquared(candidate);
+            averageDistance = Vector2.fromWidget(soldier.soldier).distanceToSquared(candidate);
         }
         averageDistance /= army.length;
         averageDistance *= 1.1;
@@ -175,7 +174,7 @@ export class AIArmy extends Entity {
         const currentArmy: Soldier[] = [];
         const straySoldiers: Soldier[] = [];
         for (let soldier of army) {
-            if (candidate.distanceToSquared(Point.fromWidget(soldier.soldier)) <= averageDistance) {
+            if (candidate.distanceToSquared(Vector2.fromWidget(soldier.soldier)) <= averageDistance) {
                 currentArmy.push(soldier);
             } else {
                 straySoldiers.push(soldier);
@@ -186,7 +185,7 @@ export class AIArmy extends Entity {
         candidate.x = 0;
         candidate.y = 0;
         for (let soldier of currentArmy) {
-            candidate.addOffset(Point.fromWidget(soldier.soldier));
+            candidate.addOffset(Vector2.fromWidget(soldier.soldier));
         }
         candidate.x /= currentArmy.length;
         candidate.y /= currentArmy.length;
@@ -208,7 +207,7 @@ class ArmyCenterReturn {
     constructor(public fullArmy: Soldier[],
                 public currentArmy: Soldier[],
                 public straySoldiers: Soldier[],
-                public centerPoint: Point) {
+                public centerPoint: Vector2) {
     }
 
     getArmyAssemblePercentage(): number {

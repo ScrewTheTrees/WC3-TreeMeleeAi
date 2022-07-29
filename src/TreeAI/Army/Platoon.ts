@@ -1,6 +1,6 @@
 import {Soldier} from "./Soldier";
-import {IsValidUnit} from "../../TreeLib/Misc";
-import {Quick} from "../../TreeLib/Quick";
+import {IsValidUnit} from "wc3-treelib/src/TreeLib/Misc";
+import {Quick} from "wc3-treelib/src/TreeLib/Quick";
 
 export class Platoon {
     public soldiers: Soldier[] = [];

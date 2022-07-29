@@ -1,5 +1,4 @@
-import {Entity} from "../TreeLib/Entity";
-import {Hooks} from "../TreeLib/Hooks";
+import { Entity } from "wc3-treelib/src/TreeLib/Entity";
 
 export class TreeAI extends Entity {
     private static instance: TreeAI;
@@ -7,15 +6,13 @@ export class TreeAI extends Entity {
     public static getInstance() {
         if (this.instance == null) {
             this.instance = new TreeAI();
-            Hooks.set(this.name, this.instance);
         }
         return this.instance;
     }
 
 
     constructor() {
-        super();
-        this._timerDelay = 1;
+        super(1);
     }
 
     step() {

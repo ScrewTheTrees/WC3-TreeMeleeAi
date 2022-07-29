@@ -1,6 +1,6 @@
 import {Town} from "../Towns/Town";
 import {TownBuildingSizes} from "../Towns/TownBuildingSizes";
-import {Point} from "../../TreeLib/Utility/Point";
+import {Vector2} from "wc3-treelib/src/TreeLib/Utility/Data/Vector2";
 import {Worker} from "../Workers/Worker";
 import {ConstructionPriority} from "./ConstructionPriority";
 
@@ -13,7 +13,7 @@ export class ConstructionTicket {
     }
 
     public target: unit | undefined;
-    public targetLocation: Point | undefined;
+    public targetLocation: Vector2 | undefined;
 
 
     isWorkerDead() {

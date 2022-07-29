@@ -1,10 +1,11 @@
-import {Point} from "../../TreeLib/Utility/Point";
+import {Vector2} from "wc3-treelib/src/TreeLib/Utility/Data/Vector2";
 import {Ids} from "../Ids";
-import {GetUnitsOfTypesAroundPointInRange, InverseFourCC} from "../../TreeLib/Misc";
+import {InverseFourCC} from "wc3-treelib/src/TreeLib/Misc";
 import {Targeting} from "../Targeting";
 import {Town} from "./Town";
 import {DistValue} from "../DistValue";
 import {AIPlayerHolder} from "../Player/AIPlayerHolder";
+import GetUnitsOfTypesAroundPointInRange = Targeting.GetUnitsOfTypesAroundPointInRange;
 
 export class AITownAllocator {
     private static ids: AITownAllocator[] = [];
@@ -28,7 +29,7 @@ export class AITownAllocator {
 
     public makeTown(building: unit) {
         if (Ids.IsHallId(InverseFourCC(GetUnitTypeId(building))) && !this.isAlreadyTown(building)) {
-            let point = Point.fromWidget(building);
+            let point = Vector2.fromWidget(building);
             let town = this.getClosestTown(point);
             if (town.distance > 2048) {
                 let mines = GetUnitsOfTypesAroundPointInRange(point, 2048, ...Object.keys(Ids.GoldmineIds));
@@ -48,7 +49,7 @@ export class AITownAllocator {
         return false;
     }
 
-    public getClosestTown(loc: Point): DistValue<Town> {
+    public getClosestTown(loc: Vector2): DistValue<Town> {
         let closestTown: Town = this.towns[0];
         let distance = math.huge;
 
