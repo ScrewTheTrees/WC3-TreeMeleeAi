@@ -195,8 +195,6 @@ export class AIConstructor extends Entity {
                 ticket.targetLocation = buildLoc;
                 ticket.searchingForLocation = false;
                 IssueBuildOrderById(worker.worker, ticket.targetType, buildLoc.x, buildLoc.y);
-
-                searchPoint.recycle();
             });
     }
 

@@ -10,7 +10,7 @@ import {HitCallback} from "wc3-treelib/src/TreeLib/Services/DDS/HitCallback";
 import {DDSFilterIsEnemy} from "wc3-treelib/src/TreeLib/Services/DDS/Filters/DDSFilterIsEnemy";
 
 export class AIArmy extends Entity {
-    private static ids: AIArmy[] = [];
+    public static ids: AIArmy[] = [];
 
     public static getInstance(aiPlayer: AIPlayerHolder): AIArmy {
         if (this.ids[aiPlayer.getPlayerId()] == null) {

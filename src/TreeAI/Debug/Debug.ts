@@ -47,12 +47,20 @@ export class Debug extends Entity {
     public debugType = "DEFAULT";
 
     step(): void {
-        let centerReturn = this.army.centerOfArmy;
-        let pos = centerReturn.centerPoint;
-        PingMinimapEx(pos.x, pos.y, 1, 254, 0, 0, false);
         let units = CreateGroup();
         GroupEnumUnitsSelected(units, this.aiPlayer.aiPlayer, null);
         let unit: unit | undefined = Quick.GroupToUnitArray(units)[0];
+        if (unit) {
+            this.army = AIArmy.ids[GetPlayerId(GetOwningPlayer(unit))];
+            this.workers = AIWorkerAllocator.ids[GetPlayerId(GetOwningPlayer(unit))];
+            this.buildings = AIBuildings.ids[GetPlayerId(GetOwningPlayer(unit))];
+            this.creepCamps = AICreepCamps.ids[GetPlayerId(GetOwningPlayer(unit))];
+        }
+        DestroyGroup(units);
+
+        let centerReturn = this.army.centerOfArmy;
+        let pos = centerReturn.centerPoint;
+        PingMinimapEx(pos.x, pos.y, 1, 254, 0, 0, false);
 
         MultiboardSetItemValueBJ(this.board, 1, 0, "");
 
@@ -61,12 +69,12 @@ export class Debug extends Entity {
                 MultiboardSetItemValueBJ(this.board, 1, 1, "Goal: " + this.army.goal.getGoal(this.army.allPlatoons).toString());
                 MultiboardSetItemValueBJ(this.board, 1, 2, "updateTimer: " + this.army.goal.updateTimer);
 
-                if ( this.army.goal instanceof CreepArmyGoal) {
+                if (this.army.goal instanceof CreepArmyGoal) {
                     let goal = this.army.goal;
                     MultiboardSetItemValueBJ(this.board, 1, 3, "camp.level: " + goal.camp.level);
                     MultiboardSetItemValueBJ(this.board, 1, 4, "camp.units.length: " + goal.camp.units.length);
                 }
-                if ( this.army.goal instanceof GoToHomeGoal) {
+                if (this.army.goal instanceof GoToHomeGoal) {
                     let goal = this.army.goal;
                     MultiboardSetItemValueBJ(this.board, 1, 3, "town.place: " + goal.town.place.toString());
                     MultiboardSetItemValueBJ(this.board, 1, 4, "town.finishTime: " + goal.finishTime);
@@ -79,7 +87,7 @@ export class Debug extends Entity {
             MultiboardSetItemValueBJ(this.board, 1, 8, "straySoldiersSize: " + centerReturn.straySoldiers.length);
             MultiboardSetItemValueBJ(this.board, 1, 9, "percentage: " + centerReturn.getArmyAssemblePercentage());
 
-            let worker = AIWorkerAllocator.getInstance(this.aiPlayer).getByUnit(unit);
+            let worker = this.workers.getByUnit(unit);
 
             if (worker) {
                 MultiboardSetItemValueBJ(this.board, 1, 16, "SU Worker Order: " + worker.lastOrderId);
@@ -132,7 +140,5 @@ export class Debug extends Entity {
         } else {
             print(this.debugType);
         }
-
-        DestroyGroup(units);
     }
 }

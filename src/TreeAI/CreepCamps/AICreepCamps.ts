@@ -6,7 +6,7 @@ import {Logger} from "wc3-treelib/src/TreeLib/Logger";
 import {Entity} from "wc3-treelib/src/TreeLib/Entity";
 
 export class AICreepCamps extends Entity {
-    private static ids: AICreepCamps[] = [];
+    public static ids: AICreepCamps[] = [];
 
     public static getInstance(aiPlayer: AIPlayerHolder): AICreepCamps {
         if (this.ids[aiPlayer.getPlayerId()] == null) {

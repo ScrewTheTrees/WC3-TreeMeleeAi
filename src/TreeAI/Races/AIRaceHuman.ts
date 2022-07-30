@@ -70,7 +70,7 @@ export class AIRaceHuman extends AIRaceAbstract {
 
         this.trainer.tryReviveHero();
 
-        this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.PEASANT), 12));
+        this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.PEASANT), 13));
 
         if (this.aiPlayer.battleConfig.heroes[0]) this.trainer.trainUnit(new TrainingTicket(FourCC(this.aiPlayer.battleConfig.heroes[0]), 1));
 
@@ -81,7 +81,8 @@ export class AIRaceHuman extends AIRaceAbstract {
             this.constructer.constructBuilding(FourCC(BaseUnits.TOWNHALL), 1, this.townAllocator.First(), TownBuildingSize.VERY_PRECISE_32, ConstructionPriority.CLOSE_TO_MINE);
         }
 
-        this.constructer.constructBuilding(FourCC(BaseUnits.FARM), math.floor(((this.aiPlayer.stats.getCurrentFood() / 6) * 1.5) - 0.5), undefined);
+        this.constructer.constructBuilding(FourCC(BaseUnits.FARM), math.floor(((this.aiPlayer.stats.getCurrentFood() / 6) * 1.4) - 0.5),
+            undefined, TownBuildingSize.DEFAULT_192, ConstructionPriority.HALL_AWAY_FROM_MINE);
 
         this.constructer.constructBuilding(FourCC(BaseUnits.ALTAROFKINGS), 1, this.townAllocator.First(), TownBuildingSize.DENSE_128, ConstructionPriority.HALL_AWAY_FROM_MINE);
         this.constructer.constructBuilding(FourCC(BaseUnits.HUMANBARRACKS), 1, this.townAllocator.First(), TownBuildingSize.DENSE_128, ConstructionPriority.HALL_AWAY_FROM_MINE);
@@ -101,7 +102,7 @@ export class AIRaceHuman extends AIRaceAbstract {
         this.constructer.constructBuilding(FourCC(BaseUnits.HUMANLUMBERMILL), 1, this.townAllocator.First(), TownBuildingSize.VERY_PRECISE_32, ConstructionPriority.CLOSE_TO_TREE);
 
         if (this.hasTier2HallFinished()) {
-            this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.PEASANT), 14));
+            this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.PEASANT), 15));
             if (this.aiPlayer.battleConfig.heroes[1]) this.trainer.trainUnit(new TrainingTicket(FourCC(this.aiPlayer.battleConfig.heroes[1]), 1));
             this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.SPELLBREAKER), 2));
             this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.PRIEST), 2));
@@ -113,7 +114,7 @@ export class AIRaceHuman extends AIRaceAbstract {
 
             if (this.aiPlayer.stats.getCurrentWood() > 160 && this.aiPlayer.stats.getCurrentGold() > 500) {
                 this.constructer.constructThenUpgrade(FourCC(BaseUnits.SCOUTTOWER), FourCC(BaseUnits.GUARDTOWER), 2,
-                    this.townAllocator.First(), TownBuildingSize.DENSE_128, ConstructionPriority.BETWEEN_MINE_AND_HALL);
+                    this.townAllocator.First(), TownBuildingSize.DEFAULT_192, ConstructionPriority.BETWEEN_MINE_AND_HALL);
             }
 
             if (this.hasTier2HallFinished() && !this.hasTier3Hall()) {

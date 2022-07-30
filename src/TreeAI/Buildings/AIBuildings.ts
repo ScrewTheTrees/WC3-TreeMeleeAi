@@ -11,7 +11,7 @@ import {GetTrainRegistry} from "../Training/TrainingRegistry";
 import {GetResearchRegistry} from "../Research/ResearchRegistry";
 
 export class AIBuildings {
-    private static ids: AIBuildings[] = [];
+    public static ids: AIBuildings[] = [];
 
 
     public static getInstance(aiPlayer: AIPlayerHolder) {

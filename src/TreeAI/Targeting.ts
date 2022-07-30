@@ -2,6 +2,7 @@ import {Vector2} from "wc3-treelib/src/TreeLib/Utility/Data/Vector2";
 import {Ids} from "./Ids";
 import {InverseFourCC} from "wc3-treelib/src/TreeLib/Misc";
 import {Quick} from "wc3-treelib/src/TreeLib/Quick";
+import {Orders} from "wc3-treelib/src/TreeLib/Structs/Orders";
 
 export namespace Targeting {
     import GroupToUnitArray = Quick.GroupToUnitArray;
@@ -17,10 +18,13 @@ export namespace Targeting {
     }
 
     export function CanBuildUnitAt(unitType: number, place: Vector2, builderType: number, builderOwner: player) {
+        if (!GetPathingAt(place, PATHING_TYPE_PEONHARVESTPATHING)) return false;
+
         let builder = getWorker(builderType);
         ShowUnit(builder, true);
         if (GetOwningPlayer(builder) != builderOwner) SetUnitOwner(builder, builderOwner, false);
         let order = IssueBuildOrderById(builder, unitType, place.x, place.y);
+        IssueImmediateOrderById(builder, Orders.stop)
         ShowUnit(builder, false);
         return order;
     }

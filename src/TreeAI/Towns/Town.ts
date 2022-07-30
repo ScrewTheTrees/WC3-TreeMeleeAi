@@ -8,9 +8,18 @@ export class Town {
                 public mineUnit: unit) {
         this.place = Vector2.fromWidget(this.hallUnit);
 
-        let tree = GetClosestTreeToLocationInRange(Vector2.fromWidget(this.mineUnit), 4096);
-        if (tree) this.treePoint = Vector2.fromWidget(tree);
-        else this.treePoint = Vector2.fromWidget(this.mineUnit);
+        let hall = Vector2.fromWidget(this.hallUnit);
+        let mine = Vector2.fromWidget(this.mineUnit);
+
+        this.treePoint = hall.getBetween(mine);
+        let destructable = GetClosestTreeToLocationInRange(this.treePoint, 4096);
+        if (destructable) {
+            this.treePoint.recycle();
+            this.treePoint = Vector2.fromWidget(destructable).polarProjectTowards(128, hall);
+        }
+
+        hall.recycle();
+        mine.recycle();
     }
 
     public place: Vector2;

@@ -96,13 +96,13 @@ export class AITownBuildingLocation {
                     break;
                 }
             }
-            if (async && it >= 64) {
+            if (async && it >= 32) {
                 coroutine.yield();
                 it = 0;
             }
         }
         let start = Vector2.new(startX, startY);
-        let final = Vector2.new(0, 0);
+        let final = Vector2.new(startX, startY);
         let dist = math.maxinteger;
         for (let i = found.length -1; i >= 0; i--) {
             let test = found[i];

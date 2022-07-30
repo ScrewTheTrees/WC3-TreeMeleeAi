@@ -5,7 +5,7 @@ import {Quick} from "wc3-treelib/src/TreeLib/Quick";
 import {AIPlayerHolder} from "../Player/AIPlayerHolder";
 
 export class AIWorkerAllocator {
-    private static ids: AIWorkerAllocator[] = [];
+    public static ids: AIWorkerAllocator[] = [];
 
     public static getInstance(aiPlayer: AIPlayerHolder): AIWorkerAllocator {
         if (this.ids[aiPlayer.getPlayerId()] == null) {

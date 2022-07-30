@@ -10,8 +10,10 @@ import {AIWorkerGroups} from "./AIWorkerGroups";
 import {AITownAllocator} from "../Towns/AITownAllocator";
 import {AIPlayerHolder} from "../Player/AIPlayerHolder";
 import {Delay} from "wc3-treelib/src/TreeLib/Services/Delay/Delay";
+import {Entity} from "wc3-treelib/src/TreeLib/Entity";
+import { Orders } from "wc3-treelib/src/TreeLib/Structs/Orders";
 
-export class AIWorkerHandler {
+export class AIWorkerHandler extends Entity {
     private static ids: AIWorkerHandler[] = [];
 
     public static getInstance(aiPlayer: AIPlayerHolder): AIWorkerHandler {
@@ -28,6 +30,8 @@ export class AIWorkerHandler {
     private workerRemover = CreateTrigger();
 
     constructor(public aiPlayer: AIPlayerHolder) {
+        super(2 + aiPlayer.getPlayerDelay());
+
         this.workerAllocator = AIWorkerAllocator.getInstance(aiPlayer);
         this.workerGroups = AIWorkerGroups.getInstance(aiPlayer);
 
@@ -47,6 +51,10 @@ export class AIWorkerHandler {
             return (Ids.IsPeonStringId(InverseFourCC(GetUnitTypeId(GetDyingUnit()))))
         }));
         TriggerAddAction(this.workerRemover, () => this.workerRemoverAction());
+    }
+
+    step() {
+        this.updateOrdersForWorkers();
     }
 
     private workerAdderAction() {
@@ -70,41 +78,48 @@ export class AIWorkerHandler {
         }
     }
 
-    public performWorkerOrder(worker: Worker, orderType: WorkerOrders, town: Town, hardReset: boolean = false) {
-        if (hardReset || worker.workerOrder != orderType) { //Update orders
-            if (orderType == WorkerOrders.ORDER_DRAFTED) {
-                return null;
-            } else if (orderType == WorkerOrders.ORDER_BUILD) {
-                return null;
-            } else if (orderType == WorkerOrders.ORDER_GOLDMINE) {
-                IssueTargetOrder(worker.worker, "harvest", town.mineUnit);
-                worker.workerOrder = WorkerOrders.ORDER_GOLDMINE;
-            } else if (orderType == WorkerOrders.ORDER_WOOD) {
-                let closestTree = Targeting.GetClosestTreeToLocationInRange(town.treePoint, 4096);
-                if (closestTree != null) {
-                    IssueTargetOrder(worker.worker, "harvest", closestTree);
-                    worker.workerOrder = WorkerOrders.ORDER_WOOD;
+    public performWorkerOrder(worker: Worker, orderType: WorkerOrders, town: Town) {
+        switch (orderType) {
+            case WorkerOrders.ORDER_GOLDMINE:
+                if (worker.workerOrder != orderType
+                    || (worker.lastOrderId != Orders.resumeharvesting && worker.lastOrderTargetUnit == null)
+                ) {
+                    IssueTargetOrder(worker.worker, "harvest", town.mineUnit);
+                    worker.workerOrder = WorkerOrders.ORDER_GOLDMINE;
                 }
-            }
+                break;
+            case WorkerOrders.ORDER_WOOD:
+                if (worker.workerOrder != orderType
+                    || (worker.lastOrderId != Orders.resumeharvesting && worker.lastOrderTargetDestructable == null)
+                ) {
+                    let closestTree = Targeting.GetClosestTreeToLocationInRange(town.treePoint, 4096);
+                    if (closestTree != null) {
+                        IssueTargetOrder(worker.worker, "harvest", closestTree);
+                        worker.workerOrder = WorkerOrders.ORDER_WOOD;
+                    }
+                }
+                break;
+            default:
+                return;
         }
     }
 
-    public iterateOrders(group: WorkerGroup, hardReset: boolean = false) {
+    public iterateOrders(group: WorkerGroup) {
         for (let i = 0; i < group.workers.length; i++) {
-            let value = group.workers[i];
-            if ((hardReset || value.workerOrder != group.orderType) && (value.workerOrder != WorkerOrders.ORDER_BUILD)) {
+            let worker = group.workers[i];
+            if (worker.workerOrder != WorkerOrders.ORDER_BUILD) {
                 if (group.orderType == WorkerOrders.ORDER_GOLDMINE) {
                     if (IsValidUnit(group.town.mineUnit)) {
-                        this.performWorkerOrder(value, WorkerOrders.ORDER_GOLDMINE, group.town, hardReset);
+                        this.performWorkerOrder(worker, WorkerOrders.ORDER_GOLDMINE, group.town);
                     } else {
-                        this.performWorkerOrder(value, WorkerOrders.ORDER_WOOD, group.town, hardReset);
+                        this.performWorkerOrder(worker, WorkerOrders.ORDER_WOOD, group.town);
                     }
                 }
                 if (group.orderType == WorkerOrders.ORDER_WOOD) {
-                    this.performWorkerOrder(value, WorkerOrders.ORDER_WOOD, group.town, hardReset);
+                    this.performWorkerOrder(worker, WorkerOrders.ORDER_WOOD, group.town);
                 }
                 if (group.orderType == WorkerOrders.ORDER_BUILD) {
-                    this.performWorkerOrder(value, this.aiPlayer.workerConfig.builderIdleOrder, group.town, false);
+                    this.performWorkerOrder(worker, this.aiPlayer.workerConfig.builderIdleOrder, group.town);
                 }
             }
         }
@@ -114,13 +129,13 @@ export class AIWorkerHandler {
         this.iterateOrders(new WorkerGroup(0, WorkerOrders.ORDER_WOOD, AITownAllocator.getInstance(this.aiPlayer).getRandomTown(), ...this.workerGroups.idleIndexes));
     }
 
-    public updateOrdersForWorkers(hardReset: boolean = false) {
+    public updateOrdersForWorkers() {
         for (let i = 0; i < this.workerGroups.workerGroups.length; i++) {
             let group = this.workerGroups.workerGroups[i];
             if (group.amountOfWorkers > group.workers.length) {
                 this.workerGroups.populateIdleWorkers(group);
             }
-            this.iterateOrders(group, hardReset);
+            this.iterateOrders(group);
         }
         this.iterateIdles();
     }
