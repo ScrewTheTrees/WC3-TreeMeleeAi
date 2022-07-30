@@ -4,4 +4,5 @@ export enum BuildingState {
     UPGRADING = "UPGRADING",
     TRAINING = "TRAINING",
     RESEARCHING = "RESEARCHING",
+    REVIVING = "REVIVING",
 }

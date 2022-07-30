@@ -11,10 +11,10 @@ export class AIWorkerGroups {
     private static ids: AIWorkerGroups[] = [];
 
     public static getInstance(aiPlayer: AIPlayerHolder): AIWorkerGroups {
-        if (this.ids[GetPlayerId(aiPlayer.aiPlayer)] == null) {
-            this.ids[GetPlayerId(aiPlayer.aiPlayer)] = new AIWorkerGroups(aiPlayer);
+        if (this.ids[aiPlayer.getPlayerId()] == null) {
+            this.ids[aiPlayer.getPlayerId()] = new AIWorkerGroups(aiPlayer);
         }
-        return this.ids[GetPlayerId(aiPlayer.aiPlayer)];
+        return this.ids[aiPlayer.getPlayerId()];
     }
 
     constructor(public aiPlayer: AIPlayerHolder) {
@@ -26,7 +26,7 @@ export class AIWorkerGroups {
     public popIdleByUnitType(unitType: string) {
         for (let i = 0; i < this.idleIndexes.length; i++) {
             let idleIndex = this.idleIndexes[i];
-            if (idleIndex.unitType == unitType && idleIndex.orders != WorkerOrders.ORDER_BUILD) {
+            if (idleIndex.unitType == unitType && idleIndex.workerOrder != WorkerOrders.ORDER_BUILD) {
                 Quick.Slice(this.idleIndexes, i);
                 return idleIndex;
             }
@@ -74,8 +74,8 @@ export class AIWorkerGroups {
 
         for (let i = 0; i < this.idleIndexes.length; i++) {
             let worker = this.idleIndexes[i];
-            if (worker.orders == WorkerOrders.ORDER_WOOD  //Eglible to be constructors
-                || (worker.orders == WorkerOrders.ORDER_GOLDMINE && this.aiPlayer.workerConfig.goldMinerCanBuild)) {
+            if (worker.workerOrder == WorkerOrders.ORDER_WOOD  //Eglible to be constructors
+                || (worker.workerOrder == WorkerOrders.ORDER_GOLDMINE && this.aiPlayer.workerConfig.goldMinerCanBuild)) {
                 if (retvar == undefined || Vector2.fromWidget(retvar.worker).distanceTo(town.place) < Vector2.fromWidget(worker.worker).distanceTo(town.place)) //Get closest one
                     retvar =  worker; //Idle workers best workers.
             }
@@ -114,15 +114,15 @@ export class AIWorkerGroups {
     public replaceWorkerOrder(fromOrderType: WorkerOrders, toOrderType: WorkerOrders) {
         this.workerGroups.forEach((workerGroup) => {
             workerGroup.workers.forEach((worker) => {
-                if (worker.orders == fromOrderType) {
-                    worker.orders = toOrderType;
+                if (worker.workerOrder == fromOrderType) {
+                    worker.workerOrder = toOrderType;
                 }
             });
         });
 
         this.idleIndexes.forEach((worker) => {
-            if (worker.orders == fromOrderType) {
-                worker.orders = toOrderType;
+            if (worker.workerOrder == fromOrderType) {
+                worker.workerOrder = toOrderType;
             }
         });
     }

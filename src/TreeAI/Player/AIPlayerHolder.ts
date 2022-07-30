@@ -11,4 +11,12 @@ export class AIPlayerHolder {
         this.stats = new AIPlayerStats(aiPlayer);
 
     }
+
+
+    public getPlayerId() {
+        return GetPlayerId(this.aiPlayer);
+    }
+    public getPlayerDelay() {
+        return 0.01 * GetPlayerId(this.aiPlayer);
+    }
 }

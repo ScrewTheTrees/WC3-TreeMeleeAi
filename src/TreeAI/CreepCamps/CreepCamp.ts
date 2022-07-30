@@ -1,5 +1,5 @@
 import {Vector2} from "wc3-treelib/src/TreeLib/Utility/Data/Vector2";
-import {IsValidUnit} from "wc3-treelib/src/TreeLib/Misc";
+import {IsUnitAlive} from "wc3-treelib/src/TreeLib/Misc";
 import {Quick} from "wc3-treelib/src/TreeLib/Quick";
 
 export class CreepCamp {
@@ -18,18 +18,22 @@ export class CreepCamp {
         this.position = Vector2.getCenterOfPoints(points);
     }
 
-    purge() {
+    reUpdateAllData(aiPlayer: player) {
+        if (this.isCampVisible(aiPlayer)) this.level = 0; //Only update level if the camp is visible.
+
         for (let i = 0; i < this.units.length; i++) {
             let u = this.units[i];
-            if (!IsValidUnit(u) || IsUnitDeadBJ(u)) {
+            if (!IsUnitAlive(u)) {
                 Quick.Slice(this.units, i);
                 i -= 1;
+            } else if (this.isCampVisible(aiPlayer)) {
+                this.level += GetUnitLevel(u);
             }
         }
     }
 
     isCampDeadToPlayer(aiPlayer: player) {
-        this.purge();
+        this.reUpdateAllData(aiPlayer);
         if (this.units.length == 0 && this.isCampVisible(aiPlayer)) this.playerKnowsDead = true;
         return this.playerKnowsDead;
     }

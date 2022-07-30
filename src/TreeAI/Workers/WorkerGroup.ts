@@ -29,8 +29,8 @@ export class WorkerGroup {
     public findIdleWorker(workerType: string) {
         for (let j = 0; j < this.workers.length; j++) {
             let worker = this.workers[j];
-            if (worker.orders != WorkerOrders.ORDER_DRAFTED //Dont allow drafted
-                && worker.orders != WorkerOrders.ORDER_BUILD //Dont allow busy workers.
+            if (worker.workerOrder != WorkerOrders.ORDER_DRAFTED //Dont allow drafted
+                && worker.workerOrder != WorkerOrders.ORDER_BUILD //Dont allow busy workers.
                 && worker.unitType == workerType) { //Is of builder type
                     return worker;
             }

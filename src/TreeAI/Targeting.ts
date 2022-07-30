@@ -11,13 +11,15 @@ export namespace Targeting {
         if (workers[builderType] == null) {
             workers[builderType] = CreateUnit(Player(PLAYER_NEUTRAL_PASSIVE), builderType, 0, 0, 0);
             SetUnitPathing(workers[builderType], false);
+            SetUnitUseFood(workers[builderType], false);
         }
         return workers[builderType];
     }
 
-    export function CanBuildUnitAt(unitType: number, place: Vector2, builderType: number) {
+    export function CanBuildUnitAt(unitType: number, place: Vector2, builderType: number, builderOwner: player) {
         let builder = getWorker(builderType);
         ShowUnit(builder, true);
+        if (GetOwningPlayer(builder) != builderOwner) SetUnitOwner(builder, builderOwner, false);
         let order = IssueBuildOrderById(builder, unitType, place.x, place.y);
         ShowUnit(builder, false);
         return order;

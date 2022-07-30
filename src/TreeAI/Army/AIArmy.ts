@@ -13,13 +13,15 @@ export class AIArmy extends Entity {
     private static ids: AIArmy[] = [];
 
     public static getInstance(aiPlayer: AIPlayerHolder): AIArmy {
-        if (this.ids[GetPlayerId(aiPlayer.aiPlayer)] == null) {
-            this.ids[GetPlayerId(aiPlayer.aiPlayer)] = new AIArmy(aiPlayer);
+        if (this.ids[aiPlayer.getPlayerId()] == null) {
+            this.ids[aiPlayer.getPlayerId()] = new AIArmy(aiPlayer);
         }
-        return this.ids[GetPlayerId(aiPlayer.aiPlayer)];
+        return this.ids[aiPlayer.getPlayerId()];
     }
 
     private onUnitTrain = CreateTrigger();
+    private onHeroRevive = CreateTrigger();
+    private onUnitDeath = CreateTrigger();
     private onUnitHit: HitCallback;
     public allPlatoons: Platoon[] = [];
     public allSoldiers: Soldier[] = [];
@@ -27,9 +29,13 @@ export class AIArmy extends Entity {
     public centerOfArmy: ArmyCenterReturn;
 
     constructor(public aiPlayer: AIPlayerHolder) {
-        super(0.5);
+        super(0.5 + aiPlayer.getPlayerDelay());
+
         TriggerRegisterPlayerUnitEvent(this.onUnitTrain, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_TRAIN_FINISH, null);
-        TriggerAddAction(this.onUnitTrain, () => this.onUnitTrainAction());
+        TriggerAddAction(this.onUnitTrain, () => this.tryAddUnitArmy(GetTrainedUnit()));
+        TriggerRegisterPlayerUnitEvent(this.onHeroRevive, this.aiPlayer.aiPlayer, EVENT_PLAYER_HERO_REVIVE_FINISH, null);
+        TriggerAddAction(this.onHeroRevive, () => this.tryAddUnitArmy(GetRevivingUnit()));
+
         this.centerOfArmy = this.getCenterOfArmy();
         this.allSoldiers = this.fetchAllSoldiers();
 
@@ -41,15 +47,22 @@ export class AIArmy extends Entity {
             }
         });
         this.onUnitHit.addFilter(new DDSFilterIsEnemy());
+
+        TriggerRegisterPlayerUnitEvent(this.onUnitDeath, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_DEATH, null);
+        TriggerAddAction(this.onUnitDeath, () => {
+            if (IsUnitType(GetDyingUnit(), UNIT_TYPE_HERO)) {
+                this.aiPlayer.battleConfig.deadHeroes.push(GetDyingUnit());
+            }
+        });
     }
 
-    private onUnitTrainAction() {
-        let unit = GetTrainedUnit();
-        if (FourCC(this.aiPlayer.workerConfig.builder) == GetTrainedUnitType()
-            && FourCC(this.aiPlayer.workerConfig.goldMiner) == GetTrainedUnitType()
-            && FourCC(this.aiPlayer.workerConfig.woodMiner) == GetTrainedUnitType())
+    public tryAddUnitArmy(u: unit) {
+        let unitType = GetUnitTypeId(GetTrainedUnit());
+        if (FourCC(this.aiPlayer.workerConfig.builder) == unitType
+            && FourCC(this.aiPlayer.workerConfig.goldMiner) == unitType
+            && FourCC(this.aiPlayer.workerConfig.woodMiner) == unitType)
             return; //We dont need no worker.
-        let soldier = new Soldier(unit);
+        let soldier = new Soldier(u);
 
 
         this.addSoldierToPlatoons(soldier);
@@ -60,10 +73,11 @@ export class AIArmy extends Entity {
             soldier.step();
         }
         if (this.goal) {
+            this.goal.step(this.timerDelay, this.allPlatoons);
             this.goal.updateTimer -= this.timerDelay;
             if (this.goal.updateTimer <= 0) {
                 this.goal.updateTimer = this.goal.updateTimerResetValue;
-                this.orderArmyToGoal(this.goal.getGoal());
+                this.orderArmyToGoal(this.goal.getGoal(this.allPlatoons));
             }
         }
         this.centerOfArmy = this.getCenterOfArmy();
@@ -101,19 +115,19 @@ export class AIArmy extends Entity {
     public setGoal(goal: ArmyGoal) {
         this.removeGoal();
         this.goal = goal;
-        goal.startGoal();
+        goal.startGoal(this.allPlatoons);
         for (let soldier of this.allSoldiers) soldier.combatTimer = 0;
-        this.orderArmyToGoal(goal.getGoal());
+        this.orderArmyToGoal(goal.getGoal(this.allPlatoons));
     }
 
     public isGoalFinished() {
         if (!this.goal) return true;
-        return this.goal.isFinished();
+        return this.goal.isFinished(this.allPlatoons);
     }
 
     public removeGoal() {
         if (this.goal) {
-            this.goal.finishGoal();
+            this.goal.finishGoal(this.allPlatoons);
             this.goal = undefined;
         }
     }
@@ -129,7 +143,7 @@ export class AIArmy extends Entity {
         }
         let newPlatoon = new Platoon();
         newPlatoon.addSoldier(soldier);
-        let n = this.allPlatoons.push(newPlatoon);
+        this.allPlatoons.push(newPlatoon);
     }
 
     public reformPlatoons() {

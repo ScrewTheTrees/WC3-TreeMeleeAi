@@ -14,10 +14,10 @@ export class AIResearch {
     private buildings: AIBuildings;
 
     public static getInstance(aiPlayer: AIPlayerHolder) {
-        if (this.ids[GetPlayerId(aiPlayer.aiPlayer)] == null) {
-            this.ids[GetPlayerId(aiPlayer.aiPlayer)] = new AIResearch(aiPlayer);
+        if (this.ids[aiPlayer.getPlayerId()] == null) {
+            this.ids[aiPlayer.getPlayerId()] = new AIResearch(aiPlayer);
         }
-        return this.ids[GetPlayerId(aiPlayer.aiPlayer)];
+        return this.ids[aiPlayer.getPlayerId()];
     }
 
     constructor(public aiPlayer: AIPlayerHolder) {

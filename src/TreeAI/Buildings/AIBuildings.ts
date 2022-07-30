@@ -15,13 +15,13 @@ export class AIBuildings {
 
 
     public static getInstance(aiPlayer: AIPlayerHolder) {
-        if (this.ids[GetPlayerId(aiPlayer.aiPlayer)] == null) {
-            this.ids[GetPlayerId(aiPlayer.aiPlayer)] = new AIBuildings(aiPlayer);
+        if (this.ids[aiPlayer.getPlayerId()] == null) {
+            this.ids[aiPlayer.getPlayerId()] = new AIBuildings(aiPlayer);
         }
-        return this.ids[GetPlayerId(aiPlayer.aiPlayer)];
+        return this.ids[aiPlayer.getPlayerId()];
     }
 
-    private buildings: Building[] = [];
+    public readonly buildings: Building[] = [];
 
     private readonly onStartConstruct: trigger;
     private readonly onCancelConstruct: trigger;
@@ -30,6 +30,7 @@ export class AIBuildings {
     private readonly onStartTraining: trigger;
     private readonly onStartUpgrade: trigger;
     private readonly onStartResearch: trigger;
+    private readonly onEndRevive: trigger;
 
     private readonly onFinish: trigger;
 
@@ -47,7 +48,7 @@ export class AIBuildings {
 
         this.onCancelConstruct = CreateTrigger();
         TriggerRegisterPlayerUnitEvent(this.onCancelConstruct, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_CONSTRUCT_CANCEL, null);
-        TriggerAddAction(this.onCancelConstruct, () => this.popByHall(GetTriggerUnit()));
+        TriggerAddAction(this.onCancelConstruct, () => this.popByBuilding(GetTriggerUnit()));
 
         this.onFinishConstruct = CreateTrigger();
         TriggerRegisterPlayerUnitEvent(this.onFinishConstruct, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_CONSTRUCT_FINISH, null);
@@ -55,7 +56,7 @@ export class AIBuildings {
 
         this.onBuildingDie = CreateTrigger();
         TriggerRegisterPlayerUnitEvent(this.onBuildingDie, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_DEATH, null);
-        TriggerAddAction(this.onBuildingDie, () => this.popByHall(GetDyingUnit()));
+        TriggerAddAction(this.onBuildingDie, () => this.popByBuilding(GetDyingUnit()));
 
         this.onStartTraining = CreateTrigger();
         TriggerRegisterPlayerUnitEvent(this.onStartTraining, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_TRAIN_START, null);
@@ -68,6 +69,18 @@ export class AIBuildings {
         this.onStartResearch = CreateTrigger();
         TriggerRegisterPlayerUnitEvent(this.onStartResearch, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_RESEARCH_START, null);
         TriggerAddAction(this.onStartResearch, () => this.onStartResearchAction());
+
+        this.onEndRevive = CreateTrigger();
+        TriggerRegisterPlayerUnitEvent(this.onEndRevive, this.aiPlayer.aiPlayer, EVENT_PLAYER_HERO_REVIVE_CANCEL, null);
+        TriggerRegisterPlayerUnitEvent(this.onEndRevive, this.aiPlayer.aiPlayer, EVENT_PLAYER_HERO_REVIVE_FINISH, null);
+        TriggerAddAction(this.onEndRevive, () => {
+            //This is set by the revivor.
+            let byHall = this.getByTargetType(InverseFourCC(GetUnitTypeId(GetRevivingUnit())));
+            if (byHall != null) {
+                byHall.status = BuildingState.IDLE;
+                byHall.targetType = "";
+            }
+        });
 
         this.onFinish = CreateTrigger();
         TriggerRegisterPlayerUnitEvent(this.onFinish, this.aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_TRAIN_CANCEL, null);
@@ -82,8 +95,10 @@ export class AIBuildings {
         for (let i = 0; i < units.length; i++) {
             let building = units[i];
             this.townAllocator.makeTown(building);
-            let building1 = new Building(building, BuildingState.IDLE, this.townAllocator.getClosestTown(Vector2.fromWidget(building)).value);
-            this.buildings.push(building1);//Make town
+            if (BlzGetUnitBooleanField(building, UNIT_BF_IS_A_BUILDING)) {
+                let building1 = new Building(building, BuildingState.IDLE, this.townAllocator.getClosestTown(Vector2.fromWidget(building)).value);
+                this.buildings.push(building1);//Make town
+            }
         }
     }
 
@@ -100,7 +115,7 @@ export class AIBuildings {
     }
 
     private onFinishingConstructAction() {
-        let byHall = this.getByHall(GetTriggerUnit());
+        let byHall = this.getByBuilding(GetTriggerUnit());
         if (byHall != null) {
             byHall.status = BuildingState.IDLE;
             let hall = byHall;
@@ -112,7 +127,7 @@ export class AIBuildings {
     }
 
     private onStartTrainingAction() {
-        let byHall = this.getByHall(GetTriggerUnit());
+        let byHall = this.getByBuilding(GetTriggerUnit());
         if (byHall != null) {
             byHall.status = BuildingState.TRAINING;
             byHall.targetType = InverseFourCC(GetTrainedUnitType());
@@ -120,7 +135,7 @@ export class AIBuildings {
     }
 
     private onStartUpgradeAction() {
-        let byHall = this.getByHall(GetTriggerUnit());
+        let byHall = this.getByBuilding(GetTriggerUnit());
         if (byHall != null) {
             byHall.status = BuildingState.UPGRADING;
             byHall.targetType = InverseFourCC(GetUnitTypeId(byHall.building));
@@ -128,7 +143,7 @@ export class AIBuildings {
     }
 
     private onStartResearchAction() {
-        let byHall = this.getByHall(GetTriggerUnit());
+        let byHall = this.getByBuilding(GetTriggerUnit());
         if (byHall != null) {
             byHall.status = BuildingState.RESEARCHING;
             byHall.targetType = InverseFourCC(GetResearched());
@@ -136,14 +151,14 @@ export class AIBuildings {
     }
 
     private onFinishAction() {
-        let byHall = this.getByHall(GetTriggerUnit());
+        let byHall = this.getByBuilding(GetTriggerUnit());
         if (byHall != null) {
             byHall.status = BuildingState.IDLE;
             byHall.targetType = "";
         }
     }
 
-    public popByHall(building: unit) {
+    public popByBuilding(building: unit) {
         for (let i = 0; i < this.buildings.length; i++) {
             if (this.buildings[i].building == building) {
                 let s = this.buildings[i];
@@ -154,9 +169,18 @@ export class AIBuildings {
         return null;
     }
 
-    public getByHall(building: unit) {
+    public getByBuilding(building: unit) {
         for (let i = 0; i < this.buildings.length; i++) {
             if (this.buildings[i].building == building) {
+                return this.buildings[i];
+            }
+        }
+        return null;
+    }
+
+    public getByTargetType(target: string) {
+        for (let i = 0; i < this.buildings.length; i++) {
+            if (this.buildings[i].targetType == target) {
                 return this.buildings[i];
             }
         }

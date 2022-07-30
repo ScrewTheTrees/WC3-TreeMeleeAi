@@ -11,10 +11,10 @@ export class AITownAllocator {
     private static ids: AITownAllocator[] = [];
 
     public static getInstance(aiPlayer: AIPlayerHolder): AITownAllocator {
-        if (this.ids[GetPlayerId(aiPlayer.aiPlayer)] == null) {
-            this.ids[GetPlayerId(aiPlayer.aiPlayer)] = new AITownAllocator(aiPlayer);
+        if (this.ids[aiPlayer.getPlayerId()] == null) {
+            this.ids[aiPlayer.getPlayerId()] = new AITownAllocator(aiPlayer);
         }
-        return this.ids[GetPlayerId(aiPlayer.aiPlayer)];
+        return this.ids[aiPlayer.getPlayerId()];
     }
 
 

@@ -1,7 +1,7 @@
 import {AIPlayerHolder} from "../Player/AIPlayerHolder";
 import {ConstructionList} from "./ConstructionList";
 import {Town} from "../Towns/Town";
-import {TownBuildingSizes} from "../Towns/TownBuildingSizes";
+import {TownBuildingSize} from "../Towns/TownBuildingSize";
 import {AITownAllocator} from "../Towns/AITownAllocator";
 import {AIWorkerGroups} from "../Workers/AIWorkerGroups";
 import {ConstructionTicket} from "./ConstructionTicket";
@@ -14,19 +14,18 @@ import {Entity} from "wc3-treelib/src/TreeLib/Entity";
 import {UpgradeTicket} from "./UpgradeTicket";
 import {GetUpgradeRegistry} from "./UpgradeRegistry";
 import {Building} from "../Buildings/Building";
-import {Logger} from "wc3-treelib/src/TreeLib/Logger";
 import {ConstructionPriority} from "./ConstructionPriority";
-import {Vector2} from "wc3-treelib/src/TreeLib/Utility/Data/Vector2";
 import {Targeting} from "../Targeting";
+import {Worker} from "../Workers/Worker";
 
 export class AIConstructor extends Entity {
     private static ids: AIConstructor[] = [];
 
     public static getInstance(aiPlayer: AIPlayerHolder): AIConstructor {
-        if (this.ids[GetPlayerId(aiPlayer.aiPlayer)] == null) {
-            this.ids[GetPlayerId(aiPlayer.aiPlayer)] = new AIConstructor(aiPlayer);
+        if (this.ids[aiPlayer.getPlayerId()] == null) {
+            this.ids[aiPlayer.getPlayerId()] = new AIConstructor(aiPlayer);
         }
-        return this.ids[GetPlayerId(aiPlayer.aiPlayer)];
+        return this.ids[aiPlayer.getPlayerId()];
     }
 
     public constructionList: ConstructionList;
@@ -36,7 +35,8 @@ export class AIConstructor extends Entity {
     private buildings: AIBuildings;
 
     constructor(public aiPlayer: AIPlayerHolder) {
-        super(1);
+        super(1 + aiPlayer.getPlayerDelay());
+
         this.constructionList = new ConstructionList();
         this.townAllocator = AITownAllocator.getInstance(aiPlayer);
         this.workerGroups = AIWorkerGroups.getInstance(aiPlayer);
@@ -70,7 +70,7 @@ export class AIConstructor extends Entity {
     }
 
     public constructBuilding(buildingType: number, amount: number, town: Town | undefined,
-                             size?: TownBuildingSizes,
+                             size?: TownBuildingSize,
                              priority?: ConstructionPriority
     ) {
         if (!town) town = this.townAllocator.getRandomTown();
@@ -99,7 +99,7 @@ export class AIConstructor extends Entity {
     }
 
     public constructThenUpgrade(buildingType: number, upgradeType: number, amount: number, town: Town | undefined,
-                                size: TownBuildingSizes = TownBuildingSizes.DEFAULT,
+                                size: TownBuildingSize = TownBuildingSize.DEFAULT_192,
                                 priority: ConstructionPriority = ConstructionPriority.NORMAL
     ) {
         let interp = this.buildings.getBuildingsOfTypeIncludePreRequisites(upgradeType).length - this.buildings.getAllBuildingsOfType(buildingType).length;
@@ -113,28 +113,20 @@ export class AIConstructor extends Entity {
     }
 
     private updateConstructionTicket(ticket: ConstructionTicket) {
-        xpcall(() => {
-            if (!ticket.target) {
-                ticket.town = ticket.town || this.townAllocator.getRandomTown();
-                let worker = ticket.worker;
-
-                if (GetUnitCurrentOrder(ticket.worker.worker) != ticket.targetType) {
-                    let searchPoint = AITownBuildingLocation.getSearchPoint(ticket.town, ticket.priority);
-                    let buildLoc = AITownBuildingLocation.getTownBuildingLocationByPoint(searchPoint, ticket.targetType, FourCC(this.aiPlayer.workerConfig.builder), ticket.size);
-                    this.workerGroups.moveWorkerToIdle(worker.worker);
-                    ticket.targetLocation = buildLoc;
-                    IssueBuildOrderById(worker.worker, ticket.targetType, buildLoc.x, buildLoc.y);
-                }
-
-                this.updateAllTickets();
-            } else {
-                if (this.aiPlayer.workerConfig.isUndeadBuilder) {
-                    this.removeTicket(ticket); //Undeads dont need to stay by the building.
-                    return;
-                }
-                IssueTargetOrder(ticket.worker.worker, "repair", ticket.target);
+        if (!ticket.target) {
+            ticket.town = ticket.town || this.townAllocator.getRandomTown();
+            if (GetUnitCurrentOrder(ticket.worker.worker) != ticket.targetType && !ticket.searchingForLocation) {
+                this.updateTicketBuldingLocation(ticket, ticket.worker, ticket.town);
             }
-        }, Logger.critical);
+
+            this.updateAllTickets();
+        } else {
+            if (this.aiPlayer.workerConfig.isUndeadBuilder) {
+                this.removeTicket(ticket); //Undeads dont need to stay by the building.
+                return;
+            }
+            IssueTargetOrder(ticket.worker.worker, "repair", ticket.target);
+        }
     }
 
     private updateUpgradeTicket(ticket: UpgradeTicket) {
@@ -145,25 +137,25 @@ export class AIConstructor extends Entity {
             if (town) targets.push(...this.buildings.getIdleBuildingsOfTypeInTown(registry[i], town));
             else targets.push(...this.buildings.getIdleBuildingsOfType(registry[i]));
         }
-        xpcall(() => {
-            let targ = targets.pop();
-            if (targ) {
-                ticket.target = targ.building;
-                IssueImmediateOrderById(ticket.target, ticket.targetType);
-            }
-        }, Logger.critical);
+        let targ = targets.pop();
+        if (targ) {
+            ticket.target = targ.building;
+            IssueImmediateOrderById(ticket.target, ticket.targetType);
+        }
     }
 
     private resolveWorkers() {
         this.workerGroups.replaceWorkerOrder(WorkerOrders.ORDER_BUILD, this.aiPlayer.workerConfig.builderIdleOrder);
-        this.constructionList.tickets.forEach((ticket) => {
-            ticket.worker.orders = WorkerOrders.ORDER_BUILD;
-            if (!ticket.target && ticket.worker && !AITownBuildingLocation.isPointUnoccupied(ticket.targetLocation, ticket.size, ticket.targetType, FourCC(this.aiPlayer.workerConfig.builder))) {
+
+        for (let i = 0; i < this.constructionList.tickets.length; i++) {
+            let ticket = this.constructionList.tickets[i];
+            ticket.worker.workerOrder = WorkerOrders.ORDER_BUILD;
+            if (!ticket.target && ticket.worker && GetUnitCurrentOrder(ticket.worker.worker) != ticket.targetType) {
                 let town: Town = this.townAllocator.getRandomTown();
                 if (ticket.town != null) town = ticket.town;
-                ticket.targetLocation = AITownBuildingLocation.getTownBuildingLocationByPoint(town.place, ticket.targetType, FourCC(this.aiPlayer.workerConfig.builder), ticket.size);
+                this.updateTicketBuldingLocation(ticket, ticket.worker, town);
             }
-        })
+        }
     }
 
     private resolveUnitsInConstruction(unitType: number) {
@@ -182,10 +174,32 @@ export class AIConstructor extends Entity {
     }
 
     public removeTicket(ticket: ConstructionTicket) {
-        ticket.worker.orders = WorkerOrders.ORDER_IDLE;
+        ticket.worker.workerOrder = WorkerOrders.ORDER_IDLE;
         this.constructionList.removeByReference(ticket);
         this.workerHandler.updateOrdersForWorkers();
     }
+
+    public updateTicketBuldingLocation(ticket: ConstructionTicket, worker: Worker, town: Town) {
+        if (ticket.searchingForLocation) return;
+
+        let searchPoint = AITownBuildingLocation.getSearchPoint(town, ticket.priority);
+
+        ticket.searchingForLocation = true;
+        AITownBuildingLocation.getTownBuildingLocationByPointAsync(searchPoint,
+            ticket.targetType,
+            FourCC(this.aiPlayer.workerConfig.builder),
+            this.aiPlayer.aiPlayer,
+            ticket.size,
+            (buildLoc) => {
+                this.workerGroups.moveWorkerToIdle(worker.worker);
+                ticket.targetLocation = buildLoc;
+                ticket.searchingForLocation = false;
+                IssueBuildOrderById(worker.worker, ticket.targetType, buildLoc.x, buildLoc.y);
+
+                searchPoint.recycle();
+            });
+    }
+
 
     private removeInactiveTicketTargets() {
         this.constructionList.tickets.forEach((ticket) => {

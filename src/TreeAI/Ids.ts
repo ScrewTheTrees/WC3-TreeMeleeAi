@@ -1,3 +1,6 @@
+import {InverseFourCC} from "wc3-treelib/src/TreeLib/Misc"
+
+
 export namespace Ids {
     export enum HallIds {
         htow = "htow",
@@ -29,6 +32,14 @@ export namespace Ids {
         ngol = "ngol",
         ugol = "ugol",
         egol = "egol",
+    }
+
+    export enum AltarIds {
+        halt = "halt",
+        oalt = "oalt",
+        uaod = "uaod",
+        eate = "eate",
+        nnad = "nnad",
     }
 
     export enum TreeTypes {
@@ -66,7 +77,10 @@ export namespace Ids {
         return ((<any>HallIds)[type] != null)
     }
 
-    export function IsPeonId(type: string) {
+    export function IsPeonId(type: number) {
+        return ((<any>PeonIds)[InverseFourCC(type)] != null)
+    }
+    export function IsPeonStringId(type: string) {
         return ((<any>PeonIds)[type] != null)
     }
 

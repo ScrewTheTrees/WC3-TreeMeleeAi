@@ -15,10 +15,10 @@ export class AIWorkerHandler {
     private static ids: AIWorkerHandler[] = [];
 
     public static getInstance(aiPlayer: AIPlayerHolder): AIWorkerHandler {
-        if (this.ids[GetPlayerId(aiPlayer.aiPlayer)] == null) {
-            this.ids[GetPlayerId(aiPlayer.aiPlayer)] = new AIWorkerHandler(aiPlayer);
+        if (this.ids[aiPlayer.getPlayerId()] == null) {
+            this.ids[aiPlayer.getPlayerId()] = new AIWorkerHandler(aiPlayer);
         }
-        return this.ids[GetPlayerId(aiPlayer.aiPlayer)];
+        return this.ids[aiPlayer.getPlayerId()];
     }
 
     private workerAllocator: AIWorkerAllocator;
@@ -38,13 +38,13 @@ export class AIWorkerHandler {
 
         TriggerRegisterPlayerUnitEvent(this.workerAdder, aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_TRAIN_FINISH, null);
         TriggerAddCondition(this.workerAdder, Condition(() => {
-            return (Ids.IsPeonId(InverseFourCC(GetUnitTypeId(GetTrainedUnit()))))
+            return (Ids.IsPeonStringId(InverseFourCC(GetUnitTypeId(GetTrainedUnit()))))
         }));
         TriggerAddAction(this.workerAdder, () => this.workerAdderAction());
 
         TriggerRegisterPlayerUnitEvent(this.workerRemover, aiPlayer.aiPlayer, EVENT_PLAYER_UNIT_DEATH, null);
         TriggerAddCondition(this.workerRemover, Condition(() => {
-            return (Ids.IsPeonId(InverseFourCC(GetUnitTypeId(GetDyingUnit()))))
+            return (Ids.IsPeonStringId(InverseFourCC(GetUnitTypeId(GetDyingUnit()))))
         }));
         TriggerAddAction(this.workerRemover, () => this.workerRemoverAction());
     }
@@ -71,19 +71,19 @@ export class AIWorkerHandler {
     }
 
     public performWorkerOrder(worker: Worker, orderType: WorkerOrders, town: Town, hardReset: boolean = false) {
-        if (hardReset || worker.orders != orderType) { //Update orders
+        if (hardReset || worker.workerOrder != orderType) { //Update orders
             if (orderType == WorkerOrders.ORDER_DRAFTED) {
                 return null;
             } else if (orderType == WorkerOrders.ORDER_BUILD) {
                 return null;
             } else if (orderType == WorkerOrders.ORDER_GOLDMINE) {
                 IssueTargetOrder(worker.worker, "harvest", town.mineUnit);
-                worker.orders = WorkerOrders.ORDER_GOLDMINE;
+                worker.workerOrder = WorkerOrders.ORDER_GOLDMINE;
             } else if (orderType == WorkerOrders.ORDER_WOOD) {
                 let closestTree = Targeting.GetClosestTreeToLocationInRange(town.treePoint, 4096);
                 if (closestTree != null) {
                     IssueTargetOrder(worker.worker, "harvest", closestTree);
-                    worker.orders = WorkerOrders.ORDER_WOOD;
+                    worker.workerOrder = WorkerOrders.ORDER_WOOD;
                 }
             }
         }
@@ -92,7 +92,7 @@ export class AIWorkerHandler {
     public iterateOrders(group: WorkerGroup, hardReset: boolean = false) {
         for (let i = 0; i < group.workers.length; i++) {
             let value = group.workers[i];
-            if ((hardReset || value.orders != group.orderType) && (value.orders != WorkerOrders.ORDER_BUILD)) {
+            if ((hardReset || value.workerOrder != group.orderType) && (value.workerOrder != WorkerOrders.ORDER_BUILD)) {
                 if (group.orderType == WorkerOrders.ORDER_GOLDMINE) {
                     if (IsValidUnit(group.town.mineUnit)) {
                         this.performWorkerOrder(value, WorkerOrders.ORDER_GOLDMINE, group.town, hardReset);

@@ -9,10 +9,10 @@ export class AICreepCamps extends Entity {
     private static ids: AICreepCamps[] = [];
 
     public static getInstance(aiPlayer: AIPlayerHolder): AICreepCamps {
-        if (this.ids[GetPlayerId(aiPlayer.aiPlayer)] == null) {
-            this.ids[GetPlayerId(aiPlayer.aiPlayer)] = new AICreepCamps(aiPlayer);
+        if (this.ids[aiPlayer.getPlayerId()] == null) {
+            this.ids[aiPlayer.getPlayerId()] = new AICreepCamps(aiPlayer);
         }
-        return this.ids[GetPlayerId(aiPlayer.aiPlayer)];
+        return this.ids[aiPlayer.getPlayerId()];
     }
 
     public campRadius = 832; //Constant
@@ -20,10 +20,11 @@ export class AICreepCamps extends Entity {
     public camps: CreepCamp[] = [];
 
     constructor(public aiPlayer: AIPlayerHolder) {
-        super(1);
+        super(1.33 + aiPlayer.getPlayerDelay());
+
         let group = Quick.GroupToUnitArrayDestroy(GetUnitsOfPlayerAll(Player(PLAYER_NEUTRAL_AGGRESSIVE)));
-        for (let i = 0; i < group.length; i++) {
-            let u = group[i];
+        while (group.length > 0) {
+            let u = group[0];
             let campGroup = this.squashNearby(group, u);
             if (campGroup.length > 0) {
                 this.camps.push(new CreepCamp(campGroup));
@@ -60,11 +61,10 @@ export class AICreepCamps extends Entity {
 
     private squashNearby(group: unit[], u: unit) {
         let newGroup: unit[] = [];
-        for (let i = 0; i < group.length; i++) {
+        for (let i = group.length - 1; i >= 0; i--) {
             if (Vector2.fromWidget(u).distanceTo(Vector2.fromWidget(group[i])) <= this.campRadius) {
                 newGroup.push(group[i]);
                 Quick.Slice(group, i);
-                i -= 1;
             }
         }
 

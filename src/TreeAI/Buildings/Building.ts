@@ -8,4 +8,9 @@ export class Building {
                 public status: BuildingState,
                 public town: Town) {
     }
+
+
+    public getType() {
+        return GetUnitTypeId(this.building);
+    }
 }

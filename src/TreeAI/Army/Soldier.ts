@@ -28,14 +28,18 @@ export class Soldier {
         return count;
     }
 
+    public isValid() {
+        return IsValidUnit(this.soldier);
+    }
+
     public getLevel() {
-        if (!IsValidUnit(this.soldier)) return 0;
-        if (GetUnitStatePercent(this.soldier, UNIT_STATE_LIFE, UNIT_STATE_MAX_LIFE) < 25) return 0;
-        if (GetUnitStatePercent(this.soldier, UNIT_STATE_LIFE, UNIT_STATE_MAX_LIFE) < 66) return GetUnitLevel(this.soldier) / 2;
+        if (!this.isValid()) return 0;
+        if (this.getPercentageHealth() < 25) return 0;
+        if (this.getPercentageHealth()  < 66) return GetUnitLevel(this.soldier) / 2;
         return GetUnitLevel(this.soldier);
     }
 
     public getPercentageHealth() {
-        return GetUnitStatePercent(this.soldier, UNIT_STATE_LIFE, UNIT_STATE_MAX_LIFE);
+        return GetUnitLifePercent(this.soldier);
     }
 }

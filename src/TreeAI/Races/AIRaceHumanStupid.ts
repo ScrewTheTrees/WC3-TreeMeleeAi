@@ -22,7 +22,7 @@ import {CreepArmyGoal} from "../Army/ArmyGoals/CreepArmyGoal";
 import {GoToHomeGoal} from "../Army/ArmyGoals/GoToHomeGoal";
 
 
-export class AIRaceHuman extends AIRaceAbstract {
+export class AIRaceHumanStupid extends AIRaceAbstract {
     public aiPlayer: AIPlayerHolder;
 
     private moduleWorker: AIWorkerHandler;
@@ -68,52 +68,33 @@ export class AIRaceHuman extends AIRaceAbstract {
         this.aiPlayer.stats.resetVirtualEconomy();
         this.constructer.resetQuery();
 
-        this.trainer.tryReviveHero();
-
-        this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.PEASANT), 12));
-
-        if (this.aiPlayer.battleConfig.heroes[0]) this.trainer.trainUnit(new TrainingTicket(FourCC(this.aiPlayer.battleConfig.heroes[0]), 1));
-
-        if (!this.hasTier2HallFinished()) this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.FOOTMAN), 4));
-        this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.RIFLEMAN), 4));
+        this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.PEASANT), 13));
 
         if (!this.townAllocator.First().isHallAlive()) {
             this.constructer.constructBuilding(FourCC(BaseUnits.TOWNHALL), 1, this.townAllocator.First(), TownBuildingSize.VERY_PRECISE_32, ConstructionPriority.CLOSE_TO_MINE);
         }
 
-        this.constructer.constructBuilding(FourCC(BaseUnits.FARM), math.floor(((this.aiPlayer.stats.getCurrentFood() / 6) * 1.5) - 0.5), undefined);
+        this.constructer.constructBuilding(FourCC(BaseUnits.FARM), 4, undefined);
 
-        this.constructer.constructBuilding(FourCC(BaseUnits.ALTAROFKINGS), 1, this.townAllocator.First(), TownBuildingSize.DENSE_128, ConstructionPriority.HALL_AWAY_FROM_MINE);
-        this.constructer.constructBuilding(FourCC(BaseUnits.HUMANBARRACKS), 1, this.townAllocator.First(), TownBuildingSize.DENSE_128, ConstructionPriority.HALL_AWAY_FROM_MINE);
-
-        this.constructer.constructBuilding(FourCC(BaseUnits.BLACKSMITH), 1, this.townAllocator.First());
 
         this.constructer.constructThenUpgrade(FourCC(BaseUnits.SCOUTTOWER), FourCC(BaseUnits.HUMANARCANETOWER), 1,
-            this.townAllocator.First(), TownBuildingSize.DENSE_128, ConstructionPriority.BETWEEN_MINE_AND_HALL);
-
-        this.constructer.constructBuilding(FourCC(BaseUnits.ARCANEVAULT), 1, this.townAllocator.First(), TownBuildingSize.DENSE_128, ConstructionPriority.CLOSE_TO_MINE);
-
+            this.townAllocator.First(), TownBuildingSize.DEFAULT_192, ConstructionPriority.BETWEEN_MINE_AND_HALL);
 
         if (!this.hasTier2Hall() && this.hasTier1Hall()) {
             this.constructer.upgradeBuilding(FourCC(BaseUnits.KEEP), 1, undefined);
         }
 
-        this.constructer.constructBuilding(FourCC(BaseUnits.HUMANLUMBERMILL), 1, this.townAllocator.First(), TownBuildingSize.VERY_PRECISE_32, ConstructionPriority.CLOSE_TO_TREE);
-
         if (this.hasTier2HallFinished()) {
             this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.PEASANT), 14));
-            if (this.aiPlayer.battleConfig.heroes[1]) this.trainer.trainUnit(new TrainingTicket(FourCC(this.aiPlayer.battleConfig.heroes[1]), 1));
-            this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.SPELLBREAKER), 2));
-            this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.PRIEST), 2));
-            this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.SORCERESS), 2));
-            this.trainer.trainUnit(new TrainingTicket(FourCC(BaseUnits.RIFLEMAN), 12));
 
-            this.constructer.constructBuilding(FourCC(BaseUnits.ARCANESANCTUM), 2, undefined, TownBuildingSize.DENSE_128, ConstructionPriority.CLOSE_TO_MINE);
-            this.constructer.constructBuilding(FourCC(BaseUnits.WORKSHOP), 1, undefined, TownBuildingSize.DENSE_128, ConstructionPriority.CLOSE_TO_MINE);
+            /*if (this.aiPlayer.stats.getCurrentWood() > 160 && this.aiPlayer.stats.getCurrentGold() > 500) {
+                this.constructer.constructThenUpgrade(FourCC(BaseUnits.SCOUTTOWER), FourCC(BaseUnits.GUARDTOWER), 4,
+                    this.townAllocator.First(), TownBuildingSizes.DENSE, ConstructionPriority.BETWEEN_MINE_AND_HALL);
+            }*/
 
-            if (this.aiPlayer.stats.getCurrentWood() > 160 && this.aiPlayer.stats.getCurrentGold() > 500) {
-                this.constructer.constructThenUpgrade(FourCC(BaseUnits.SCOUTTOWER), FourCC(BaseUnits.GUARDTOWER), 2,
-                    this.townAllocator.First(), TownBuildingSize.DENSE_128, ConstructionPriority.BETWEEN_MINE_AND_HALL);
+            if (this.aiPlayer.stats.getCurrentWood() > 160 && this.aiPlayer.stats.getCurrentGold() > 1000) {
+                this.constructer.constructThenUpgrade(FourCC(BaseUnits.SCOUTTOWER), FourCC(BaseUnits.HUMANARCANETOWER), 4,
+                    this.townAllocator.First(), TownBuildingSize.DEFAULT_192, ConstructionPriority.BETWEEN_MINE_AND_HALL);
             }
 
             if (this.hasTier2HallFinished() && !this.hasTier3Hall()) {
@@ -121,16 +102,10 @@ export class AIRaceHuman extends AIRaceAbstract {
             }
         }
 
-        this.researcher.startResearch(new ResearchTicket(FourCC(BaseUpgrades.HUMAN_FOOTMAN_DEFEND), 1));
-        this.researcher.startResearch(new ResearchTicket(FourCC(BaseUpgrades.HUMAN_MELEE_ATTACK), 3));
-        this.researcher.startResearch(new ResearchTicket(FourCC(BaseUpgrades.HUMAN_RANGED_ATTACK), 3));
-        this.researcher.startResearch(new ResearchTicket(FourCC(BaseUpgrades.HUMAN_ARMOR), 3));
-        this.researcher.startResearch(new ResearchTicket(FourCC(BaseUpgrades.HUMAN_LEATHER_ARMOR), 3));
+        this.constructer.constructBuilding(FourCC(BaseUnits.FARM), 999, undefined);
+
         this.researcher.startResearch(new ResearchTicket(FourCC(BaseUpgrades.HUMAN_LUMBER_HARVESTING), 2));
         this.researcher.startResearch(new ResearchTicket(FourCC(BaseUpgrades.HUMAN_ARCHITECTURE), 3));
-        this.researcher.startResearch(new ResearchTicket(FourCC(BaseUpgrades.HUMAN_PRIEST_TRAINING), 3));
-        this.researcher.startResearch(new ResearchTicket(FourCC(BaseUpgrades.HUMAN_SORCERESS_TRAINING), 3));
-        this.researcher.startResearch(new ResearchTicket(FourCC(BaseUpgrades.HUMAN_MAGICAL_SENTINAL), 1));
     }
 
     private handleAttackOrders() {
