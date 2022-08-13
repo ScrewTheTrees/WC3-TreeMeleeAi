@@ -17,7 +17,7 @@ export class GoToHomeGoal implements ArmyGoal {
     }
 
     public getGoal(allPlatoons: Platoon[]) {
-        return Vector2.fromWidget(this.town.mineUnit);
+        return Vector2.fromWidget(this.town.hallUnit);
     }
 
     finishGoal(allPlatoons: Platoon[]) {

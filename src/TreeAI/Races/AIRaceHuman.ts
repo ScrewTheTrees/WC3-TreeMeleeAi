@@ -81,13 +81,13 @@ export class AIRaceHuman extends AIRaceAbstract {
             this.constructer.constructBuilding(FourCC(BaseUnits.TOWNHALL), 1, this.townAllocator.First(), TownBuildingSize.VERY_PRECISE_32, ConstructionPriority.CLOSE_TO_MINE);
         }
 
-        this.constructer.constructBuilding(FourCC(BaseUnits.FARM), math.floor(((this.aiPlayer.stats.getCurrentFood() / 6) * 1.4) - 0.5),
-            undefined, TownBuildingSize.DEFAULT_192, ConstructionPriority.HALL_AWAY_FROM_MINE);
+        this.constructer.constructBuilding(FourCC(BaseUnits.FARM), math.floor(((this.aiPlayer.stats.getCurrentFood() / 6) * 1.1)),
+            undefined, TownBuildingSize.DEFAULT_192, ConstructionPriority.NORMAL);
 
-        this.constructer.constructBuilding(FourCC(BaseUnits.ALTAROFKINGS), 1, this.townAllocator.First(), TownBuildingSize.DENSE_128, ConstructionPriority.HALL_AWAY_FROM_MINE);
-        this.constructer.constructBuilding(FourCC(BaseUnits.HUMANBARRACKS), 1, this.townAllocator.First(), TownBuildingSize.DENSE_128, ConstructionPriority.HALL_AWAY_FROM_MINE);
+        this.constructer.constructBuilding(FourCC(BaseUnits.ALTAROFKINGS), 1, this.townAllocator.First(), TownBuildingSize.DENSE_128, ConstructionPriority.BETWEEN_MINE_AND_HALL);
+        this.constructer.constructBuilding(FourCC(BaseUnits.HUMANBARRACKS), 1, this.townAllocator.First(), TownBuildingSize.DENSE_128, ConstructionPriority.BETWEEN_MINE_AND_HALL);
 
-        this.constructer.constructBuilding(FourCC(BaseUnits.BLACKSMITH), 1, this.townAllocator.First());
+        this.constructer.constructBuilding(FourCC(BaseUnits.BLACKSMITH), 1, this.townAllocator.First(), undefined, ConstructionPriority.HALL_AWAY_FROM_MINE);
 
         this.constructer.constructThenUpgrade(FourCC(BaseUnits.SCOUTTOWER), FourCC(BaseUnits.HUMANARCANETOWER), 1,
             this.townAllocator.First(), TownBuildingSize.DENSE_128, ConstructionPriority.BETWEEN_MINE_AND_HALL);
@@ -143,7 +143,6 @@ export class AIRaceHuman extends AIRaceAbstract {
                 if (closestCamp) this.army.setGoal(new CreepArmyGoal(closestCamp));
                 else {
                     this.army.setGoal(new GoToHomeGoal(this.townAllocator.First()));
-                    print("No eligble camp found.");
                 }
             }
         }

@@ -6,7 +6,7 @@ export class Platoon {
     public soldiers: Soldier[] = [];
 
     isSatisfied() {
-        return (this.soldiers.length >= 12);
+        return (this.soldiers.length >= 8);
     }
 
     addSoldier(soldier: Soldier) {

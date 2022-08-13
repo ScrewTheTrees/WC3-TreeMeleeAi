@@ -1,8 +1,12 @@
 import {ArmyGoal} from "./ArmyGoal";
 import {CreepCamp} from "../../CreepCamps/CreepCamp";
 import {Platoon} from "../Platoon";
+import {ArmyCenter} from "../ArmyCenter";
 
 export class CreepArmyGoal implements ArmyGoal {
+
+    public startTime: number = 3;
+    public center?: ArmyCenter;
 
     constructor(public camp: CreepCamp) {
     }
@@ -22,6 +26,10 @@ export class CreepArmyGoal implements ArmyGoal {
     }
 
     public getGoal(allPlatoons: Platoon[]) {
+        if (this.startTime > 0) {
+            this.center = ArmyCenter.getCenterOfPlatoons(allPlatoons, this.center);
+            return this.center.centerPoint;
+        }
         return this.camp.position;
     }
 
@@ -30,9 +38,10 @@ export class CreepArmyGoal implements ArmyGoal {
     }
 
     step(timeStep: number, allPlatoons: Platoon[]): void {
+        if (this.startTime > 0) this.startTime -= timeStep;
     }
 
-    updateTimer: number = 3;
-    updateTimerResetValue: number = 3;
+    updateTimer: number = 2;
+    updateTimerResetValue: number = 4;
 
 }
